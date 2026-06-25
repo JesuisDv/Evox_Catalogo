@@ -645,10 +645,12 @@
       if (activeCat === null) return;
       const name = document.getElementById('d-name').value.trim();
       const url  = document.getElementById('d-url').value.trim();
+      const bg   = document.getElementById('d-bg').value || '#ffffff';
       if (!name || !url) { showToast('Completa nombre y URL', 'error'); return; }
-      catalog[activeCat].designs.push({ name, url });
+      catalog[activeCat].designs.push({ name, url, bg });
       document.getElementById('d-name').value = '';
       document.getElementById('d-url').value = '';
+      document.getElementById('d-bg').value = '#ffffff';
       renderPanel();
       setStatus('Sin guardar', '');
     }
@@ -712,11 +714,15 @@
             ${cat.designs.length ? cat.designs.map((d, i) => {
               const fid = extractFileId(d.url);
               const thumb = fid ? `https://drive.google.com/thumbnail?id=${fid}&sz=w80` : null;
+              const bg = d.bg || '#ffffff';
               return `
                 <li class="design-item">
-                  ${thumb
-                    ? `<img class="design-thumb" src="${thumb}" alt="${d.name}" onerror="this.style.display='none'" />`
-                    : `<div class="design-thumb-placeholder">🖼</div>`}
+                  <div style="position:relative;flex-shrink:0;">
+                    ${thumb
+                      ? `<img class="design-thumb" src="${thumb}" alt="${d.name}" style="background:${bg};" onerror="this.style.display='none'" />`
+                      : `<div class="design-thumb-placeholder" style="background:${bg};">🖼</div>`}
+                    <div title="Fondo: ${bg}" style="position:absolute;bottom:2px;right:2px;width:12px;height:12px;border-radius:50%;background:${bg};border:1px solid rgba(255,255,255,0.3);"></div>
+                  </div>
                   <div class="design-info">
                     <div class="design-name">${d.name}</div>
                     <div class="design-url">${d.url}</div>
@@ -739,14 +745,29 @@
                 <label>Link de Google Drive</label>
                 <input type="text" id="d-url" placeholder="https://drive.google.com/file/d/..." onkeydown="if(event.key==='Enter')addDesign()" />
               </div>
+              <div class="field" style="margin:0;min-width:90px;max-width:90px;">
+                <label>Color fondo</label>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                  <input type="color" id="d-bg" value="#ffffff"
+                    style="width:44px;height:44px;padding:2px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;border-radius:var(--radius);" />
+                  <span id="d-bg-label" style="font-size:10px;color:var(--text-muted);letter-spacing:1px;">#ffffff</span>
+                </div>
+              </div>
               <button class="btn btn-sm" style="height:44px;align-self:flex-end;" onclick="addDesign()">+ Agregar</button>
             </div>
             <p style="font-size:10px;color:var(--text-muted);margin-top:10px;letter-spacing:1px;">
-              Pega el link de compartir de Drive. La imagen debe ser pública ("cualquier persona con el link puede ver").
+              Pega el link de compartir de Drive. La imagen debe ser pública ("cualquier persona con el link puede ver"). El color de fondo se aplica detrás de la imagen en la galería.
             </p>
           </div>
         </div>
-      `;
+      \`;
+
+      // Sync color label
+      const bgInput = document.getElementById('d-bg');
+      const bgLabel = document.getElementById('d-bg-label');
+      if (bgInput && bgLabel) {
+        bgInput.addEventListener('input', () => { bgLabel.textContent = bgInput.value; });
+      }
     }
 
     // ---- DRAG & DROP (reorder categories) ----
