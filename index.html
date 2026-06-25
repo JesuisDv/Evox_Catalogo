@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evox.wear — Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #2a2a2a;
+      --accent: #e8ff00;
+      --accent-dim: rgba(232,255,0,0.12);
+      --text: #f0f0f0;
+      --text-muted: #666;
+      --radius: 4px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 4px;
+      color: var(--text);
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .header-sub {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* HERO STRIP */
+    .hero {
+      padding: 48px 40px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      color: var(--text);
+    }
+
+    .hero h1 em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .hero p {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      max-width: 400px;
+    }
+
+    /* CATEGORY TABS */
+    .tabs-wrapper {
+      padding: 0 40px;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      display: flex;
+      gap: 0;
+      scrollbar-width: none;
+    }
+
+    .tabs-wrapper::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 20px 24px;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tab-btn:hover { color: var(--text); }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* GALLERY */
+    .gallery-section {
+      padding: 40px;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .category-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+    }
+
+    .count-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 2px;
+    }
+
+    .card {
+      background: var(--surface);
+      aspect-ratio: 1;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      group: true;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease, filter 0.3s ease;
+      filter: brightness(0.9);
+    }
+
+    .card:hover img {
+      transform: scale(1.04);
+      filter: brightness(1);
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 16px;
+    }
+
+    .card:hover .card-overlay { opacity: 1; }
+
+    .card-name {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: white;
+    }
+
+    .card-skeleton {
+      background: var(--surface2);
+      aspect-ratio: 1;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 80px 40px;
+      color: var(--text-muted);
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .lightbox img {
+      width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+      border: 1px solid var(--border);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -48px;
+      right: 0;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 24px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 2px;
+      font-size: 11px;
+      text-transform: uppercase;
+      padding: 8px;
+    }
+
+    .lightbox-close:hover { color: var(--accent); }
+
+    .lightbox-name {
+      margin-top: 12px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* LOADING STATE */
+    .loading-msg {
+      padding: 60px 40px;
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* NO CATEGORIES */
+    .no-categories {
+      padding: 80px 40px;
+      text-align: center;
+    }
+
+    .no-categories p {
+      font-size: 13px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer span {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 20px; }
+      .hero { padding: 32px 20px 24px; }
+      .tabs-wrapper { padding: 0 20px; }
+      .gallery-section { padding: 24px 20px; }
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">EVOX<span>.</span>WEAR</div>
+    <span class="header-sub">Catálogo de Diseños</span>
+  </header>
+
+  <section class="hero">
+    <h1>NUESTROS<br /><em>DISEÑOS</em></h1>
+    <p>Selecciona una categoría para explorar los diseños disponibles. Para hacer tu pedido, escríbenos por Instagram.</p>
+  </section>
+
+  <div class="tabs-wrapper" id="tabs"></div>
+
+  <main id="main-content">
+    <div class="loading-msg">Cargando catálogo...</div>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" onclick="closeLightbox()">✕ cerrar</button>
+      <img id="lightbox-img" src="" alt="" />
+      <p class="lightbox-name" id="lightbox-name"></p>
+    </div>
+  </div>
+
+  <footer>
+    <span>© Evox.wear — Barranquilla</span>
+    <a href="https://instagram.com/evox.wear" target="_blank">@evox.wear</a>
+  </footer>
+
+  <script>
+    const GITHUB_USER = 'JesuisDv';
+    const GITHUB_REPO = 'Evox_Catalogo';
+    const DATA_FILE = 'catalog.json';
+
+    let catalog = [];
+    let activeIndex = 0;
+
+    async function loadCatalog() {
+      try {
+        const url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${DATA_FILE}?t=${Date.now()}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('No catalog found');
+        catalog = await res.json();
+        render();
+      } catch (e) {
+        document.getElementById('main-content').innerHTML = `
+          <div class="no-categories">
+            <p>El catálogo aún no tiene categorías.<br />El admin puede agregarlas desde el panel.</p>
+          </div>`;
+        document.getElementById('tabs').innerHTML = '';
+      }
+    }
+
+    function driveThumbUrl(fileId, size = 400) {
+      return `https://drive.google.com/thumbnail?id=${fileId}&sz=w${size}`;
+    }
+
+    function extractFileId(url) {
+      const patterns = [
+        /\/file\/d\/([a-zA-Z0-9_-]+)/,
+        /id=([a-zA-Z0-9_-]+)/,
+        /\/d\/([a-zA-Z0-9_-]+)/
+      ];
+      for (const p of patterns) {
+        const m = url.match(p);
+        if (m) return m[1];
+      }
+      return null;
+    }
+
+    function render() {
+      const tabs = document.getElementById('tabs');
+      const main = document.getElementById('main-content');
+
+      if (!catalog.length) {
+        tabs.innerHTML = '';
+        main.innerHTML = `<div class="no-categories"><p>No hay categorías todavía.</p></div>`;
+        return;
+      }
+
+      // Render tabs
+      tabs.innerHTML = catalog.map((cat, i) => `
+        <button class="tab-btn ${i === activeIndex ? 'active' : ''}" onclick="switchTab(${i})">${cat.name}</button>
+      `).join('');
+
+      // Render active category
+      const cat = catalog[activeIndex];
+      const designs = cat.designs || [];
+
+      if (!designs.length) {
+        main.innerHTML = `
+          <div class="gallery-section">
+            <div class="category-header">
+              <h2>${cat.name}</h2>
+              <span class="count-badge">0 diseños</span>
+            </div>
+            <div class="empty-state">
+              <span class="icon">🎨</span>
+              <p>Esta categoría no tiene diseños aún.</p>
+            </div>
+          </div>`;
+        return;
+      }
+
+      main.innerHTML = `
+        <div class="gallery-section">
+          <div class="category-header">
+            <h2>${cat.name}</h2>
+            <span class="count-badge">${designs.length} diseño${designs.length !== 1 ? 's' : ''}</span>
+          </div>
+          <div class="grid" id="grid">
+            ${designs.map((_, i) => `<div class="card-skeleton" id="sk-${i}"></div>`).join('')}
+          </div>
+        </div>`;
+
+      // Load images
+      designs.forEach((d, i) => {
+        const fileId = extractFileId(d.url);
+        const thumb = fileId ? driveThumbUrl(fileId) : d.url;
+        const el = document.getElementById(`sk-${i}`);
+        if (!el) return;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => openLightbox(fileId ? driveThumbUrl(fileId, 1200) : d.url, d.name);
+
+        const img = new Image();
+        img.onload = () => {
+          card.innerHTML = `
+            <img src="${thumb}" alt="${d.name}" loading="lazy" />
+            <div class="card-overlay"><span class="card-name">${d.name}</span></div>`;
+          el.replaceWith(card);
+        };
+        img.onerror = () => {
+          card.innerHTML = `
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a1a1a;color:#444;font-size:11px;letter-spacing:1px;text-align:center;padding:20px;">
+              ${d.name}<br/><small style="opacity:0.5">imagen no disponible</small>
+            </div>`;
+          el.replaceWith(card);
+        };
+        img.src = thumb;
+      });
+    }
+
+    function switchTab(i) {
+      activeIndex = i;
+      render();
+    }
+
+    function openLightbox(src, name) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-name').textContent = name;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(e) {
+      if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox-close')) return;
+      document.getElementById('lightbox').classList.remove('open');
+      document.getElementById('lightbox-img').src = '';
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox({ target: document.getElementById('lightbox') });
+    });
+
+    loadCatalog();
+  </script>
+</body>
+</html>
