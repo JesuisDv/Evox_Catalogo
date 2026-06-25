@@ -392,12 +392,14 @@
       designs.forEach((d, i) => {
         const fid = extractFileId(d.url);
         const thumb = thumbUrl(fid);
+        const bg = d.bg || 'var(--surface)';
         const el = document.getElementById(`sk-${i}`);
         if (!el) return;
 
         const card = document.createElement('div');
         card.className = 'card';
-        card.onclick = () => openLightbox(thumbUrl(fid, 1200), d.name);
+        card.style.background = bg;
+        card.onclick = () => openLightbox(thumbUrl(fid, 1200), d.name, bg);
 
         const img = new Image();
         img.onload = () => {
@@ -407,7 +409,7 @@
           el.replaceWith(card);
         };
         img.onerror = () => {
-          card.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--surface2);color:var(--text-muted);font-size:10px;letter-spacing:1px;text-align:center;padding:16px;">${d.name}<br/><small>imagen no disponible</small></div>`;
+          card.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:${bg};color:var(--text-muted);font-size:10px;letter-spacing:1px;text-align:center;padding:16px;">${d.name}<br/><small>imagen no disponible</small></div>`;
           el.replaceWith(card);
         };
         img.src = thumb;
@@ -416,8 +418,9 @@
 
     function switchTab(i) { activeIndex = i; render(); }
 
-    function openLightbox(src, name) {
+    function openLightbox(src, name, bg) {
       document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-img').style.background = bg || 'transparent';
       document.getElementById('lightbox-name').textContent = name;
       document.getElementById('lightbox').classList.add('open');
       document.body.style.overflow = 'hidden';
