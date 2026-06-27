@@ -184,10 +184,6 @@
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-screen').style.display = 'block';
     ghToken = localStorage.getItem('evox_gh_token') || '';
-    if (!ghToken) {
-      var t = prompt('Ingresa tu GitHub Token (se guarda en tu navegador):');
-      if (t) { ghToken = t.trim(); localStorage.setItem('evox_gh_token', ghToken); }
-    }
     loadFromGitHub();
   }
 
@@ -195,6 +191,12 @@
     document.getElementById('login-screen').style.display = 'flex';
     document.getElementById('admin-screen').style.display = 'none';
     document.getElementById('pwd-input').value = '';
+  }
+
+  // Call this once from browser console to store the token:
+  // setupToken('your_token_here')
+  function setupToken(t) {
+    if (t) { localStorage.setItem('evox_gh_token', t); ghToken = t; console.log('Token guardado.'); }
   }
 
   // ── GITHUB ───────────────────────────────────────────────
