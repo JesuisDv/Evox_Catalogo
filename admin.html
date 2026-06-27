@@ -3,821 +3,509 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Evox Admin — Panel</title>
+  <title>Evox Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0a0a0f;
-      --surface: #10101a;
-      --surface2: #17172a;
-      --border: #2a2a45;
-      --accent: #9b5de5;
-      --accent-dim: rgba(155,93,229,0.1);
-      --text: #f0f0f0;
-      --text-muted: #6666aa;
-      --danger: #ff4444;
-      --success: #00cc88;
-      --radius: 4px;
+      --bg: #0a0a0f; --surface: #10101a; --surface2: #17172a;
+      --border: #2a2a45; --accent: #9b5de5; --accent-bright: #c084fc;
+      --accent-dim: rgba(155,93,229,0.1); --text: #f0f0f8; --text-muted: #6666aa;
+      --danger: #ff4444; --success: #00cc88; --radius: 4px;
     }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-weight: 300;
-      min-height: 100vh;
-    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 300; min-height: 100vh; }
 
     /* LOGIN */
-    .login-screen {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+    #login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+    #admin-screen { display:none; }
+    .login-box { background:var(--surface); border:1px solid var(--border); padding:48px 40px; width:100%; max-width:380px; }
+    .logo { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:4px; margin-bottom:8px; }
+    .logo span { color:var(--accent-bright); }
+    .login-sub { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); margin-bottom:40px; }
+    .field { margin-bottom:16px; }
+    .field label { display:block; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+    .field input, .field textarea {
+      width:100%; background:var(--surface2); border:1px solid var(--border);
+      color:var(--text); font-family:'Inter',sans-serif; font-size:13px;
+      padding:12px 16px; outline:none; transition:border-color 0.2s; border-radius:var(--radius);
     }
-
-    .login-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 48px 40px;
-      width: 100%;
-      max-width: 380px;
-    }
-
-    .login-box .logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 4px;
-      margin-bottom: 8px;
-    }
-
-    .login-box .logo span { color: var(--accent); }
-
-    .login-box p {
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 40px;
-    }
-
-    .field {
-      margin-bottom: 16px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-
-    .field input, .field textarea, .field select {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      padding: 12px 16px;
-      outline: none;
-      transition: border-color 0.2s;
-      border-radius: var(--radius);
-    }
-
-    .field input:focus, .field textarea:focus {
-      border-color: var(--accent);
-    }
-
-    .field textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .btn {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 14px 24px;
-      cursor: pointer;
-      width: 100%;
-      transition: opacity 0.2s;
-    }
-
-    .btn:hover { opacity: 0.85; }
-
-    .btn-ghost {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-    }
-
-    .btn-ghost:hover { border-color: var(--text-muted); color: var(--text); opacity: 1; }
-
-    .btn-danger {
-      background: transparent;
-      border: 1px solid var(--danger);
-      color: var(--danger);
-    }
-
-    .btn-danger:hover { background: var(--danger); color: white; opacity: 1; }
-
-    .btn-sm {
-      padding: 8px 16px;
-      font-size: 10px;
-      width: auto;
-    }
-
-    .login-error {
-      background: rgba(255,68,68,0.1);
-      border: 1px solid var(--danger);
-      color: var(--danger);
-      padding: 10px 16px;
-      font-size: 12px;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-      display: none;
-    }
+    .field input:focus, .field textarea:focus { border-color:var(--accent); }
+    .login-error { background:rgba(255,68,68,0.1); border:1px solid var(--danger); color:var(--danger); padding:10px 16px; font-size:12px; letter-spacing:1px; margin-bottom:16px; display:none; }
+    .btn { background:var(--accent); color:#000; border:none; font-family:'Inter',sans-serif; font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:14px 24px; cursor:pointer; width:100%; transition:opacity 0.2s; border-radius:var(--radius); }
+    .btn:hover { opacity:0.85; }
+    .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--text-muted); }
+    .btn-ghost:hover { border-color:var(--text-muted); color:var(--text); opacity:1; }
+    .btn-danger { background:transparent; border:1px solid var(--danger); color:var(--danger); }
+    .btn-danger:hover { background:var(--danger); color:white; opacity:1; }
+    .btn-sm { padding:8px 16px; font-size:10px; width:auto; }
 
     /* ADMIN LAYOUT */
-    .admin-screen { display: none; }
-
-    header {
-      padding: 20px 40px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      background: rgba(10,10,10,0.95);
-      backdrop-filter: blur(12px);
-      z-index: 100;
-    }
-
-    .logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 24px;
-      letter-spacing: 4px;
-    }
-
-    .logo span { color: var(--accent); }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .save-status {
-      font-size: 11px;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-    }
-
-    .save-status.saving { color: var(--accent); }
-    .save-status.saved { color: var(--success); }
-    .save-status.error { color: var(--danger); }
-
-    .admin-body {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: calc(100vh - 65px);
-    }
+    header { padding:20px 40px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:rgba(10,10,15,0.95); backdrop-filter:blur(12px); z-index:100; }
+    .header-right { display:flex; align-items:center; gap:16px; }
+    .save-status { font-size:11px; letter-spacing:1px; color:var(--text-muted); }
+    .save-status.saving { color:var(--accent-bright); }
+    .save-status.saved  { color:var(--success); }
+    .save-status.error  { color:var(--danger); }
+    .admin-body { display:grid; grid-template-columns:280px 1fr; min-height:calc(100vh - 65px); }
 
     /* SIDEBAR */
-    .sidebar {
-      border-right: 1px solid var(--border);
-      padding: 24px;
-      overflow-y: auto;
-    }
+    .sidebar { border-right:1px solid var(--border); padding:24px; overflow-y:auto; }
+    .sidebar-title { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); margin-bottom:16px; }
+    .cat-list { list-style:none; margin-bottom:20px; }
+    .cat-item { display:flex; align-items:center; gap:8px; padding:10px 12px; cursor:pointer; border:1px solid transparent; border-radius:var(--radius); margin-bottom:4px; transition:all 0.15s; user-select:none; }
+    .cat-item:hover { background:var(--surface2); border-color:var(--border); }
+    .cat-item.active { background:var(--accent-dim); border-color:var(--accent); color:var(--accent-bright); }
+    .cat-item .drag-handle { color:var(--text-muted); cursor:grab; opacity:0.4; }
+    .cat-item .cat-name { flex:1; font-size:12px; font-weight:500; letter-spacing:1px; text-transform:uppercase; }
+    .cat-item .cat-count { font-size:10px; color:var(--text-muted); }
+    .cat-item.drag-over { border-color:var(--accent); background:var(--accent-dim); }
+    .divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
 
-    .sidebar-title {
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-
-    .cat-list {
-      list-style: none;
-      margin-bottom: 20px;
-    }
-
-    .cat-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      border-radius: var(--radius);
-      margin-bottom: 4px;
-      transition: all 0.15s;
-      user-select: none;
-    }
-
-    .cat-item:hover { background: var(--surface2); border-color: var(--border); }
-
-    .cat-item.active {
-      background: var(--accent-dim);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .cat-item .drag-handle {
-      color: var(--text-muted);
-      cursor: grab;
-      font-size: 14px;
-      opacity: 0.4;
-    }
-
-    .cat-item .cat-name {
-      flex: 1;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .cat-item .cat-count {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .cat-item.dragging {
-      opacity: 0.4;
-      background: var(--surface2);
-    }
-
-    .cat-item.drag-over {
-      border-color: var(--accent);
-      background: var(--accent-dim);
-    }
-
-    /* MAIN PANEL */
-    .panel {
-      padding: 32px 40px;
-      overflow-y: auto;
-    }
-
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 32px;
-    }
-
-    .panel-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 2px;
-    }
-
-    .section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 24px;
-      margin-bottom: 20px;
-      border-radius: var(--radius);
-    }
-
-    .section-title {
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    /* DESIGN LIST */
-    .design-list {
-      list-style: none;
-      margin-bottom: 20px;
-    }
-
-    .design-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      margin-bottom: 8px;
-      transition: border-color 0.15s;
-    }
-
-    .design-item:hover { border-color: #3a3a3a; }
-
-    .design-thumb {
-      width: 48px;
-      height: 48px;
-      object-fit: cover;
-      background: #1e1e1e;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
-    .design-thumb-placeholder {
-      width: 48px;
-      height: 48px;
-      background: #1e1e1e;
-      border-radius: 2px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    .design-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .design-name {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-
-    .design-url {
-      font-size: 10px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .design-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .icon-btn {
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      width: 32px;
-      height: 32px;
-      cursor: pointer;
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      transition: all 0.15s;
-    }
-
-    .icon-btn:hover { color: var(--danger); border-color: var(--danger); }
-
-    /* ADD FORM */
-    .add-design-form {
-      border: 1px dashed var(--border);
-      padding: 20px;
-      border-radius: var(--radius);
-    }
-
-    .add-design-form .row {
-      display: grid;
-      grid-template-columns: 1fr 2fr auto;
-      gap: 12px;
-      align-items: end;
-    }
+    /* PANEL */
+    .panel { padding:32px 40px; overflow-y:auto; }
+    .panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; }
+    .panel-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:2px; }
+    .section { background:var(--surface); border:1px solid var(--border); padding:24px; margin-bottom:20px; border-radius:var(--radius); }
+    .section-title { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:var(--text-muted); margin-bottom:20px; }
+    .design-list { list-style:none; margin-bottom:20px; }
+    .design-item { display:flex; align-items:center; gap:12px; padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:8px; }
+    .design-thumb { width:48px; height:48px; object-fit:contain; border-radius:2px; flex-shrink:0; display:block; }
+    .design-thumb-placeholder { width:48px; height:48px; border-radius:2px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:18px; }
+    .design-info { flex:1; min-width:0; }
+    .design-name { font-size:12px; font-weight:500; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+    .design-url { font-size:10px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .design-bg-dot { width:14px; height:14px; border-radius:50%; flex-shrink:0; border:1px solid rgba(255,255,255,0.2); }
+    .icon-btn { background:none; border:1px solid var(--border); color:var(--text-muted); width:32px; height:32px; cursor:pointer; border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:14px; transition:all 0.15s; }
+    .icon-btn:hover { color:var(--danger); border-color:var(--danger); }
+    .add-form { border:1px dashed var(--border); padding:20px; border-radius:var(--radius); }
+    .add-form-row { display:grid; grid-template-columns:1fr 2fr 90px auto; gap:12px; align-items:end; }
+    .add-form-note { font-size:10px; color:var(--text-muted); margin-top:10px; letter-spacing:1px; }
+    .color-picker-wrap { display:flex; flex-direction:column; gap:6px; }
+    .color-picker-wrap label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); }
+    .color-picker-inner { display:flex; align-items:center; gap:8px; }
+    .color-picker-inner input[type="color"] { width:44px; height:44px; padding:2px; background:var(--surface2); border:1px solid var(--border); cursor:pointer; border-radius:var(--radius); }
+    .color-hex { font-size:10px; color:var(--text-muted); letter-spacing:1px; }
+    .empty-panel { padding:60px; text-align:center; color:var(--text-muted); font-size:13px; letter-spacing:1px; }
 
     /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 14px 20px;
-      font-size: 12px;
-      letter-spacing: 1px;
-      z-index: 9999;
-      display: none;
-      gap: 10px;
-      align-items: center;
-      min-width: 240px;
-    }
+    .toast { position:fixed; bottom:32px; right:32px; background:var(--surface); border:1px solid var(--border); padding:14px 20px; font-size:12px; letter-spacing:1px; z-index:9999; display:none; align-items:center; min-width:240px; }
+    .toast.show { display:flex; }
+    .toast.success { border-color:var(--success); color:var(--success); }
+    .toast.error   { border-color:var(--danger); color:var(--danger); }
 
-    .toast.show { display: flex; }
-    .toast.success { border-color: var(--success); color: var(--success); }
-    .toast.error { border-color: var(--danger); color: var(--danger); }
-
-    .empty-panel {
-      padding: 60px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 13px;
-      letter-spacing: 1px;
-    }
-
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 20px 0;
-    }
-
-    @media (max-width: 768px) {
-      .admin-body { grid-template-columns: 1fr; }
-      .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
-      header { padding: 16px 20px; }
-      .panel { padding: 24px 20px; }
-      .add-design-form .row { grid-template-columns: 1fr; }
+    @media (max-width:768px) {
+      .admin-body { grid-template-columns:1fr; }
+      .sidebar { border-right:none; border-bottom:1px solid var(--border); }
+      header { padding:16px 20px; }
+      .panel { padding:24px 20px; }
+      .add-form-row { grid-template-columns:1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div class="login-screen" id="login-screen">
-    <div class="login-box">
-      <div class="logo">EVOX<span>.</span>WEAR</div>
-      <p>Panel de administración</p>
-      <div class="login-error" id="login-error">Contraseña incorrecta</div>
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">EVOX<span>.</span>WEAR</div>
+    <p class="login-sub">Panel de administración</p>
+    <div class="login-error" id="login-error">Contraseña incorrecta</div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="pwd-input" placeholder="••••••••" />
+    </div>
+    <button class="btn" id="login-btn">Entrar</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen">
+  <header>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <img src="data:image/png;base64,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" alt="Evox.wear" style="height:44px;width:auto;display:block;" />
+      <span style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text-muted);">Admin</span>
+    </div>
+    <div class="header-right">
+      <span class="save-status" id="save-status"></span>
+      <button class="btn btn-ghost btn-sm" id="save-btn">💾 Guardar cambios</button>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Salir</button>
+    </div>
+  </header>
+  <div class="admin-body">
+    <aside class="sidebar">
+      <div class="sidebar-title">Categorías</div>
+      <ul class="cat-list" id="cat-list"></ul>
+      <hr class="divider" />
+      <div class="sidebar-title">Nueva categoría</div>
       <div class="field">
-        <label>Contraseña</label>
-        <input type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()" />
+        <input type="text" id="new-cat-input" placeholder="Ej: Anime, Autos, Pelis..." />
       </div>
-      <button class="btn" onclick="doLogin()">Entrar</button>
-    </div>
+      <button class="btn btn-sm" id="add-cat-btn">+ Agregar</button>
+    </aside>
+    <main class="panel" id="panel">
+      <div class="empty-panel">← Selecciona o crea una categoría para empezar</div>
+    </main>
   </div>
+</div>
 
-  <!-- ADMIN -->
-  <div class="admin-screen" id="admin-screen">
-    <header>
-      <div class="logo">EVOX<span>.</span>WEAR <span style="font-family:Inter;font-size:11px;letter-spacing:3px;color:var(--text-muted);margin-left:12px;">ADMIN</span></div>
-      <div class="header-right">
-        <span class="save-status" id="save-status"></span>
-        <button class="btn btn-ghost btn-sm" onclick="saveToGitHub()">💾 Guardar cambios</button>
-        <button class="btn btn-ghost btn-sm" onclick="doLogout()">Salir</button>
-      </div>
-    </header>
+<div class="toast" id="toast"></div>
 
-    <div class="admin-body">
-      <!-- SIDEBAR: categories -->
-      <aside class="sidebar">
-        <div class="sidebar-title">Categorías</div>
-        <ul class="cat-list" id="cat-list"></ul>
-        <hr class="divider" />
-        <div class="section-title" style="margin-bottom:12px;">Nueva categoría</div>
-        <div class="field">
-          <input type="text" id="new-cat-input" placeholder="Ej: Anime, Autos, Pelis..." onkeydown="if(event.key==='Enter')addCategory()" />
-        </div>
-        <button class="btn btn-sm" onclick="addCategory()">+ Agregar</button>
-      </aside>
+<script>
+  // ── CONFIG ──────────────────────────────────────────────
+  var GITHUB_USER = 'JesuisDv';
+  var GITHUB_REPO = 'Evox_Catalogo';
+  var DATA_FILE   = 'catalog.json';
+  var ADMIN_PASS  = 'evox2024';
+  // ────────────────────────────────────────────────────────
 
-      <!-- MAIN PANEL -->
-      <main class="panel" id="panel">
-        <div class="empty-panel">
-          ← Selecciona o crea una categoría para empezar
-        </div>
-      </main>
-    </div>
-  </div>
+  var catalog   = [];
+  var activeCat = null;
+  var ghToken   = '';
+  var dragSrc   = null;
+  var toastTimer;
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
+  // ── INIT ─────────────────────────────────────────────────
+  document.getElementById('login-btn').addEventListener('click', doLogin);
+  document.getElementById('pwd-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('logout-btn').addEventListener('click', doLogout);
+  document.getElementById('save-btn').addEventListener('click', saveToGitHub);
+  document.getElementById('add-cat-btn').addEventListener('click', addCategory);
+  document.getElementById('new-cat-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') addCategory(); });
 
-  <script>
-    // ============================================================
-    // CONFIG — cambia solo estas dos líneas si es necesario
-    // ============================================================
-    const GITHUB_TOKEN = ''; // Se introduce en runtime, no hardcodeado aquí
-    const GITHUB_USER  = 'JesuisDv';
-    const GITHUB_REPO  = 'Evox_Catalogo';
-    const DATA_FILE    = 'catalog.json';
-    const ADMIN_PASS   = 'evox2024'; // Cambia esto a tu contraseña
-    // ============================================================
-
-    let catalog = [];
-    let activeCat = null;
-    let ghToken = '';
-    let dragSrc = null;
-
-    // ---- AUTH ----
-    function doLogin() {
-      const pwd = document.getElementById('pwd-input').value;
-      if (pwd === ADMIN_PASS) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('admin-screen').style.display = 'block';
-        // Get token from localStorage or prompt
-        ghToken = localStorage.getItem('evox_gh_token') || '';
-        if (!ghToken) promptToken();
-        else loadFromGitHub();
-      } else {
-        document.getElementById('login-error').style.display = 'block';
-        document.getElementById('pwd-input').value = '';
-      }
-    }
-
-    function promptToken() {
-      const t = prompt('Ingresa tu GitHub Token (se guarda solo en tu navegador):');
-      if (t) {
-        ghToken = t.trim();
-        localStorage.setItem('evox_gh_token', ghToken);
-        loadFromGitHub();
-      }
-    }
-
-    function doLogout() {
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('admin-screen').style.display = 'none';
+  // ── AUTH ─────────────────────────────────────────────────
+  function doLogin() {
+    var pwd = document.getElementById('pwd-input').value;
+    if (pwd !== ADMIN_PASS) {
+      document.getElementById('login-error').style.display = 'block';
       document.getElementById('pwd-input').value = '';
+      return;
     }
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    ghToken = localStorage.getItem('evox_gh_token') || '';
+    if (!ghToken) {
+      var t = prompt('Ingresa tu GitHub Token (se guarda en tu navegador):');
+      if (t) { ghToken = t.trim(); localStorage.setItem('evox_gh_token', ghToken); }
+    }
+    loadFromGitHub();
+  }
 
-    // ---- GITHUB ----
-    async function loadFromGitHub() {
-      setStatus('Cargando...', 'saving');
-      try {
-        const res = await fetch(
-          `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${DATA_FILE}`,
-          { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github+json' } }
-        );
-        if (res.status === 404) {
-          catalog = [];
-          setStatus('Catálogo nuevo', '');
-          renderSidebar();
-          return;
+  function doLogout() {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('admin-screen').style.display = 'none';
+    document.getElementById('pwd-input').value = '';
+  }
+
+  // ── GITHUB ───────────────────────────────────────────────
+  async function loadFromGitHub() {
+    setStatus('Cargando...', 'saving');
+    try {
+      var res = await fetch(
+        'https://api.github.com/repos/' + GITHUB_USER + '/' + GITHUB_REPO + '/contents/' + DATA_FILE,
+        { headers: { Authorization: 'token ' + ghToken, Accept: 'application/vnd.github+json' } }
+      );
+      if (res.status === 404) { catalog = []; setStatus('Catálogo vacío', ''); renderSidebar(); return; }
+      var data = await res.json();
+      catalog = JSON.parse(atob(data.content.replace(/\n/g, '')));
+      setStatus('Cargado ✓', 'saved');
+      renderSidebar();
+    } catch(e) {
+      setStatus('Error al cargar', 'error');
+      showToast('Error al cargar desde GitHub', 'error');
+    }
+  }
+
+  async function saveToGitHub() {
+    setStatus('Guardando...', 'saving');
+    try {
+      var checkRes = await fetch(
+        'https://api.github.com/repos/' + GITHUB_USER + '/' + GITHUB_REPO + '/contents/' + DATA_FILE,
+        { headers: { Authorization: 'token ' + ghToken, Accept: 'application/vnd.github+json' } }
+      );
+      var sha = '';
+      if (checkRes.ok) { var checkData = await checkRes.json(); sha = checkData.sha; }
+
+      var content = btoa(unescape(encodeURIComponent(JSON.stringify(catalog, null, 2))));
+      var body = { message: 'Update catalog', content: content };
+      if (sha) body.sha = sha;
+
+      var res = await fetch(
+        'https://api.github.com/repos/' + GITHUB_USER + '/' + GITHUB_REPO + '/contents/' + DATA_FILE,
+        {
+          method: 'PUT',
+          headers: { Authorization: 'token ' + ghToken, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
         }
-        const data = await res.json();
-        catalog = JSON.parse(atob(data.content.replace(/\n/g, '')));
-        setStatus('Cargado ✓', 'saved');
-        renderSidebar();
-      } catch (e) {
-        setStatus('Error cargando', 'error');
-        showToast('Error al cargar desde GitHub', 'error');
-      }
+      );
+      if (!res.ok) throw new Error(await res.text());
+      setStatus('Guardado ✓', 'saved');
+      showToast('Catálogo guardado correctamente', 'success');
+    } catch(e) {
+      setStatus('Error al guardar', 'error');
+      showToast('Error al guardar: ' + e.message, 'error');
     }
+  }
 
-    async function saveToGitHub() {
-      setStatus('Guardando...', 'saving');
-      try {
-        // Get current SHA if file exists
-        let sha = '';
-        const check = await fetch(
-          `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${DATA_FILE}`,
-          { headers: { Authorization: `token ${ghToken}`, Accept: 'application/vnd.github+json' } }
-        );
-        if (check.ok) {
-          const d = await check.json();
-          sha = d.sha;
+  // ── CATEGORIES ───────────────────────────────────────────
+  function addCategory() {
+    var input = document.getElementById('new-cat-input');
+    var name  = input.value.trim();
+    if (!name) return;
+    catalog.push({ name: name, designs: [] });
+    input.value = '';
+    activeCat = catalog.length - 1;
+    renderSidebar();
+    renderPanel();
+    setStatus('Sin guardar', '');
+  }
+
+  function deleteCategory(i) {
+    if (!confirm('¿Eliminar la categoría "' + catalog[i].name + '" y todos sus diseños?')) return;
+    catalog.splice(i, 1);
+    if (activeCat >= catalog.length) activeCat = catalog.length - 1;
+    if (activeCat < 0) activeCat = null;
+    renderSidebar();
+    renderPanel();
+    setStatus('Sin guardar', '');
+  }
+
+  function renameCategory(i) {
+    var name = prompt('Nuevo nombre:', catalog[i].name);
+    if (name && name.trim()) {
+      catalog[i].name = name.trim();
+      renderSidebar();
+      renderPanel();
+      setStatus('Sin guardar', '');
+    }
+  }
+
+  // ── DESIGNS ──────────────────────────────────────────────
+  function addDesign() {
+    if (activeCat === null) return;
+    var name = document.getElementById('d-name').value.trim();
+    var url  = document.getElementById('d-url').value.trim();
+    var bg   = document.getElementById('d-bg').value || '#ffffff';
+    if (!name || !url) { showToast('Completa nombre y URL', 'error'); return; }
+    catalog[activeCat].designs.push({ name: name, url: url, bg: bg });
+    document.getElementById('d-name').value = '';
+    document.getElementById('d-url').value  = '';
+    document.getElementById('d-bg').value   = '#ffffff';
+    document.getElementById('d-bg-hex').textContent = '#ffffff';
+    renderPanel();
+    setStatus('Sin guardar', '');
+  }
+
+  function deleteDesign(i) {
+    catalog[activeCat].designs.splice(i, 1);
+    renderPanel();
+    setStatus('Sin guardar', '');
+  }
+
+  function extractFileId(url) {
+    if (!url) return null;
+    if (url.indexOf('/drive/folders/') !== -1) return null;
+    var patterns = [/\/file\/d\/([a-zA-Z0-9_-]+)/, /[?&]id=([a-zA-Z0-9_-]+)/, /\/d\/([a-zA-Z0-9_-]+)/];
+    for (var i = 0; i < patterns.length; i++) {
+      var m = url.match(patterns[i]);
+      if (m) return m[1];
+    }
+    return null;
+  }
+
+  // ── RENDER ───────────────────────────────────────────────
+  function renderSidebar() {
+    var list = document.getElementById('cat-list');
+    list.innerHTML = '';
+    catalog.forEach(function(cat, i) {
+      var li = document.createElement('li');
+      li.className = 'cat-item' + (i === activeCat ? ' active' : '');
+      li.draggable = true;
+      li.innerHTML =
+        '<span class="drag-handle">⠿</span>' +
+        '<span class="cat-name">' + cat.name + '</span>' +
+        '<span class="cat-count">' + cat.designs.length + '</span>';
+      li.addEventListener('click', function() { selectCat(i); });
+      li.addEventListener('dragstart', function(e) { dragStart(e, i); });
+      li.addEventListener('dragover',  function(e) { dragOver(e, i); });
+      li.addEventListener('drop',      function(e) { dragDrop(e, i); });
+      li.addEventListener('dragend',   dragEnd);
+      list.appendChild(li);
+    });
+  }
+
+  function selectCat(i) {
+    activeCat = i;
+    renderSidebar();
+    renderPanel();
+  }
+
+  function renderPanel() {
+    var panel = document.getElementById('panel');
+    if (activeCat === null || activeCat >= catalog.length) {
+      panel.innerHTML = '<div class="empty-panel">← Selecciona o crea una categoría para empezar</div>';
+      return;
+    }
+    var cat = catalog[activeCat];
+
+    // Clear panel
+    panel.innerHTML = '';
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'panel-header';
+    header.innerHTML =
+      '<h2 class="panel-title">' + cat.name + '</h2>' +
+      '<div style="display:flex;gap:8px;">' +
+        '<button class="btn btn-ghost btn-sm" id="rename-btn">✏️ Renombrar</button>' +
+        '<button class="btn btn-danger btn-sm" id="delete-cat-btn">🗑 Eliminar categoría</button>' +
+      '</div>';
+    panel.appendChild(header);
+
+    document.getElementById('rename-btn').addEventListener('click', function() { renameCategory(activeCat); });
+    document.getElementById('delete-cat-btn').addEventListener('click', function() { deleteCategory(activeCat); });
+
+    // Section
+    var section = document.createElement('div');
+    section.className = 'section';
+
+    var secTitle = document.createElement('div');
+    secTitle.className = 'section-title';
+    secTitle.textContent = 'Diseños (' + cat.designs.length + ')';
+    section.appendChild(secTitle);
+
+    // Design list
+    var ul = document.createElement('ul');
+    ul.className = 'design-list';
+
+    if (!cat.designs.length) {
+      var empty = document.createElement('li');
+      empty.style.cssText = 'font-size:12px;color:var(--text-muted);padding:12px;letter-spacing:1px;';
+      empty.textContent = 'No hay diseños aún. Agrega uno abajo.';
+      ul.appendChild(empty);
+    } else {
+      cat.designs.forEach(function(d, i) {
+        var fid   = extractFileId(d.url);
+        var bg    = d.bg || '#ffffff';
+        var thumb = fid ? 'https://drive.google.com/thumbnail?id=' + fid + '&sz=w80' : null;
+
+        var li = document.createElement('li');
+        li.className = 'design-item';
+
+        // Thumb wrapper
+        var thumbWrap = document.createElement('div');
+        thumbWrap.style.cssText = 'position:relative;flex-shrink:0;';
+
+        if (thumb) {
+          var imgEl = document.createElement('img');
+          imgEl.className = 'design-thumb';
+          imgEl.src = thumb;
+          imgEl.alt = d.name;
+          imgEl.style.backgroundColor = bg;
+          imgEl.onerror = function() { this.style.display = 'none'; };
+          thumbWrap.appendChild(imgEl);
+        } else {
+          var ph = document.createElement('div');
+          ph.className = 'design-thumb-placeholder';
+          ph.style.backgroundColor = bg;
+          ph.textContent = '🖼';
+          thumbWrap.appendChild(ph);
         }
 
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(catalog, null, 2))));
-        const body = { message: 'Update catalog', content, ...(sha ? { sha } : {}) };
+        // Color dot
+        var dot = document.createElement('div');
+        dot.className = 'design-bg-dot';
+        dot.style.backgroundColor = bg;
+        dot.title = 'Fondo: ' + bg;
+        dot.style.cssText += ';position:absolute;bottom:2px;right:2px;';
+        thumbWrap.appendChild(dot);
+        li.appendChild(thumbWrap);
 
-        const res = await fetch(
-          `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${DATA_FILE}`,
-          {
-            method: 'PUT',
-            headers: {
-              Authorization: `token ${ghToken}`,
-              Accept: 'application/vnd.github+json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-          }
-        );
+        // Info
+        var info = document.createElement('div');
+        info.className = 'design-info';
+        info.innerHTML = '<div class="design-name">' + d.name + '</div><div class="design-url">' + d.url + '</div>';
+        li.appendChild(info);
 
-        if (!res.ok) throw new Error(await res.text());
-        setStatus('Guardado ✓', 'saved');
-        showToast('Catálogo guardado correctamente', 'success');
-      } catch (e) {
-        setStatus('Error al guardar', 'error');
-        showToast('Error al guardar en GitHub', 'error');
-        console.error(e);
-      }
-    }
-
-    // ---- CATEGORIES ----
-    function addCategory() {
-      const input = document.getElementById('new-cat-input');
-      const name = input.value.trim();
-      if (!name) return;
-      catalog.push({ name, designs: [] });
-      input.value = '';
-      activeCat = catalog.length - 1;
-      renderSidebar();
-      renderPanel();
-      setStatus('Sin guardar', '');
-    }
-
-    function deleteCategory(i) {
-      if (!confirm(`¿Eliminar la categoría "${catalog[i].name}" y todos sus diseños?`)) return;
-      catalog.splice(i, 1);
-      if (activeCat >= catalog.length) activeCat = catalog.length - 1;
-      if (activeCat < 0) activeCat = null;
-      renderSidebar();
-      renderPanel();
-      setStatus('Sin guardar', '');
-    }
-
-    function renameCategory(i) {
-      const name = prompt('Nuevo nombre:', catalog[i].name);
-      if (name && name.trim()) {
-        catalog[i].name = name.trim();
-        renderSidebar();
-        renderPanel();
-        setStatus('Sin guardar', '');
-      }
-    }
-
-    // ---- DESIGNS ----
-    function addDesign() {
-      if (activeCat === null) return;
-      const name = document.getElementById('d-name').value.trim();
-      const url  = document.getElementById('d-url').value.trim();
-      const bg   = document.getElementById('d-bg').value || '#ffffff';
-      if (!name || !url) { showToast('Completa nombre y URL', 'error'); return; }
-      catalog[activeCat].designs.push({ name, url, bg });
-      document.getElementById('d-name').value = '';
-      document.getElementById('d-url').value = '';
-      document.getElementById('d-bg').value = '#ffffff';
-      renderPanel();
-      setStatus('Sin guardar', '');
-    }
-
-    function deleteDesign(i) {
-      catalog[activeCat].designs.splice(i, 1);
-      renderPanel();
-      setStatus('Sin guardar', '');
-    }
-
-    function extractFileId(url) {
-      const patterns = [/\/file\/d\/([a-zA-Z0-9_-]+)/, /id=([a-zA-Z0-9_-]+)/, /\/d\/([a-zA-Z0-9_-]+)/];
-      for (const p of patterns) { const m = url.match(p); if (m) return m[1]; }
-      return null;
-    }
-
-    // ---- RENDER ----
-    function renderSidebar() {
-      const list = document.getElementById('cat-list');
-      list.innerHTML = catalog.map((cat, i) => `
-        <li class="cat-item ${i === activeCat ? 'active' : ''}"
-            draggable="true"
-            ondragstart="dragStart(event,${i})"
-            ondragover="dragOver(event,${i})"
-            ondrop="dragDrop(event,${i})"
-            ondragend="dragEnd()"
-            onclick="selectCat(${i})">
-          <span class="drag-handle">⠿</span>
-          <span class="cat-name">${cat.name}</span>
-          <span class="cat-count">${cat.designs.length}</span>
-        </li>
-      `).join('');
-    }
-
-    function selectCat(i) {
-      activeCat = i;
-      renderSidebar();
-      renderPanel();
-    }
-
-    function renderPanel() {
-      const panel = document.getElementById('panel');
-      if (activeCat === null || activeCat >= catalog.length) {
-        panel.innerHTML = `<div class="empty-panel">← Selecciona o crea una categoría para empezar</div>`;
-        return;
-      }
-      const cat = catalog[activeCat];
-
-      panel.innerHTML = `
-        <div class="panel-header">
-          <h2 class="panel-title">${cat.name}</h2>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-ghost btn-sm" onclick="renameCategory(${activeCat})">✏️ Renombrar</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteCategory(${activeCat})">🗑 Eliminar categoría</button>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">Diseños (${cat.designs.length})</div>
-          <ul class="design-list" id="design-list">
-            ${cat.designs.length ? cat.designs.map((d, i) => {
-              const fid = extractFileId(d.url);
-              const thumb = fid ? `https://drive.google.com/thumbnail?id=${fid}&sz=w80` : null;
-              const bg = d.bg || '#ffffff';
-              return `
-                <li class="design-item">
-                  <div style="position:relative;flex-shrink:0;">
-                    ${thumb
-                      ? `<img class="design-thumb" src="${thumb}" alt="${d.name}" style="background:${bg};" onerror="this.style.display='none'" />`
-                      : `<div class="design-thumb-placeholder" style="background:${bg};">🖼</div>`}
-                    <div title="Fondo: ${bg}" style="position:absolute;bottom:2px;right:2px;width:12px;height:12px;border-radius:50%;background:${bg};border:1px solid rgba(255,255,255,0.3);"></div>
-                  </div>
-                  <div class="design-info">
-                    <div class="design-name">${d.name}</div>
-                    <div class="design-url">${d.url}</div>
-                  </div>
-                  <div class="design-actions">
-                    <button class="icon-btn" title="Eliminar" onclick="deleteDesign(${i})">✕</button>
-                  </div>
-                </li>`;
-            }).join('') : '<li style="font-size:12px;color:var(--text-muted);padding:12px;letter-spacing:1px;">No hay diseños aún. Agrega uno abajo.</li>'}
-          </ul>
-
-          <div class="add-design-form">
-            <div class="section-title" style="margin-bottom:16px;">Agregar diseño</div>
-            <div class="row">
-              <div class="field" style="margin:0">
-                <label>Nombre</label>
-                <input type="text" id="d-name" placeholder="Ej: Naruto v1" />
-              </div>
-              <div class="field" style="margin:0">
-                <label>Link de Google Drive</label>
-                <input type="text" id="d-url" placeholder="https://drive.google.com/file/d/..." onkeydown="if(event.key==='Enter')addDesign()" />
-              </div>
-              <div class="field" style="margin:0;min-width:90px;max-width:90px;">
-                <label>Color fondo</label>
-                <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-                  <input type="color" id="d-bg" value="#ffffff"
-                    style="width:44px;height:44px;padding:2px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;border-radius:var(--radius);" />
-                  <span id="d-bg-label" style="font-size:10px;color:var(--text-muted);letter-spacing:1px;">#ffffff</span>
-                </div>
-              </div>
-              <button class="btn btn-sm" style="height:44px;align-self:flex-end;" onclick="addDesign()">+ Agregar</button>
-            </div>
-            <p style="font-size:10px;color:var(--text-muted);margin-top:10px;letter-spacing:1px;">
-              Pega el link de compartir de Drive. La imagen debe ser pública ("cualquier persona con el link puede ver"). El color de fondo se aplica detrás de la imagen en la galería.
-            </p>
-          </div>
-        </div>
-      `;
-
-      // Sync color label
-      const bgInput = document.getElementById('d-bg');
-      const bgLabel = document.getElementById('d-bg-label');
-      if (bgInput && bgLabel) {
-        bgInput.addEventListener('input', () => { bgLabel.textContent = bgInput.value; });
-      }
-    }
-
-    // ---- DRAG & DROP (reorder categories) ----
-    function dragStart(e, i) {
-      dragSrc = i;
-      e.currentTarget.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    }
-
-    function dragOver(e, i) {
-      e.preventDefault();
-      document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('drag-over'));
-      document.querySelectorAll('.cat-item')[i]?.classList.add('drag-over');
-    }
-
-    function dragDrop(e, i) {
-      e.preventDefault();
-      if (dragSrc === null || dragSrc === i) return;
-      const item = catalog.splice(dragSrc, 1)[0];
-      catalog.splice(i, 0, item);
-      if (activeCat === dragSrc) activeCat = i;
-      else if (activeCat > dragSrc && activeCat <= i) activeCat--;
-      else if (activeCat < dragSrc && activeCat >= i) activeCat++;
-      dragSrc = null;
-      renderSidebar();
-      setStatus('Sin guardar', '');
-    }
-
-    function dragEnd() {
-      document.querySelectorAll('.cat-item').forEach(el => {
-        el.classList.remove('dragging', 'drag-over');
+        // Delete btn
+        var actions = document.createElement('div');
+        var delBtn = document.createElement('button');
+        delBtn.className = 'icon-btn';
+        delBtn.title = 'Eliminar';
+        delBtn.textContent = '✕';
+        delBtn.addEventListener('click', (function(idx) { return function() { deleteDesign(idx); }; })(i));
+        actions.appendChild(delBtn);
+        li.appendChild(actions);
+        ul.appendChild(li);
       });
-      dragSrc = null;
     }
+    section.appendChild(ul);
 
-    // ---- UI HELPERS ----
-    function setStatus(msg, type) {
-      const el = document.getElementById('save-status');
-      el.textContent = msg;
-      el.className = 'save-status ' + (type || '');
-    }
+    // Add form
+    var addForm = document.createElement('div');
+    addForm.className = 'add-form';
+    addForm.innerHTML =
+      '<div class="section-title" style="margin-bottom:16px;">Agregar diseño</div>' +
+      '<div class="add-form-row">' +
+        '<div class="field" style="margin:0"><label>Nombre</label><input type="text" id="d-name" placeholder="Ej: Naruto v1" /></div>' +
+        '<div class="field" style="margin:0"><label>Link de Google Drive</label><input type="text" id="d-url" placeholder="https://drive.google.com/file/d/..." /></div>' +
+        '<div class="color-picker-wrap"><label>Color fondo</label><div class="color-picker-inner"><input type="color" id="d-bg" value="#ffffff" /><span class="color-hex" id="d-bg-hex">#ffffff</span></div></div>' +
+        '<button class="btn btn-sm" id="add-design-btn" style="height:44px;align-self:flex-end;">+ Agregar</button>' +
+      '</div>' +
+      '<p class="add-form-note">Link de Drive con acceso "Cualquier persona con el link". El color de fondo se aplica detrás de la imagen.</p>';
+    section.appendChild(addForm);
+    panel.appendChild(section);
 
-    let toastTimer;
-    function showToast(msg, type = 'success') {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = `toast show ${type}`;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
-    }
-  </script>
+    // Events for add form
+    document.getElementById('add-design-btn').addEventListener('click', addDesign);
+    document.getElementById('d-url').addEventListener('keydown', function(e) { if (e.key === 'Enter') addDesign(); });
+    document.getElementById('d-bg').addEventListener('input', function() {
+      document.getElementById('d-bg-hex').textContent = this.value;
+    });
+  }
+
+  // ── DRAG & DROP ──────────────────────────────────────────
+  function dragStart(e, i) {
+    dragSrc = i;
+    e.dataTransfer.effectAllowed = 'move';
+  }
+  function dragOver(e, i) {
+    e.preventDefault();
+    document.querySelectorAll('.cat-item').forEach(function(el) { el.classList.remove('drag-over'); });
+    var items = document.querySelectorAll('.cat-item');
+    if (items[i]) items[i].classList.add('drag-over');
+  }
+  function dragDrop(e, i) {
+    e.preventDefault();
+    if (dragSrc === null || dragSrc === i) return;
+    var item = catalog.splice(dragSrc, 1)[0];
+    catalog.splice(i, 0, item);
+    if      (activeCat === dragSrc)                            activeCat = i;
+    else if (activeCat > dragSrc && activeCat <= i)            activeCat--;
+    else if (activeCat < dragSrc && activeCat >= i)            activeCat++;
+    dragSrc = null;
+    renderSidebar();
+    setStatus('Sin guardar', '');
+  }
+  function dragEnd() {
+    document.querySelectorAll('.cat-item').forEach(function(el) { el.classList.remove('drag-over'); });
+    dragSrc = null;
+  }
+
+  // ── UI HELPERS ───────────────────────────────────────────
+  function setStatus(msg, type) {
+    var el = document.getElementById('save-status');
+    el.textContent = msg;
+    el.className = 'save-status' + (type ? ' ' + type : '');
+  }
+  function showToast(msg, type) {
+    type = type || 'success';
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { t.classList.remove('show'); }, 3500);
+  }
+</script>
 </body>
 </html>
