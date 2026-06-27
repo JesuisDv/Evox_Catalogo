@@ -273,5 +273,70 @@
         "bg": "#000000"
       }
     ]
+  },
+  {
+    "name": "Pokemon",
+    "designs": [
+      {
+        "name": "Diseño 1",
+        "url": "https://drive.google.com/file/d/106tMo5zOt8RJyVzh0AlSNL0tKQ02mJ40/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 3",
+        "url": "https://drive.google.com/file/d/1RK1XKS74JSiON5VwgAV8qgOiAQZhXQg5/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 5",
+        "url": "https://drive.google.com/file/d/1hXBjVe0yV5dbnp-6G_CClQFr2M_amZo5/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 7",
+        "url": "https://drive.google.com/file/d/1hz7mwysvjU3O5MllqVzFpG0EmYXaBsCK/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 9",
+        "url": "https://drive.google.com/file/d/1XWsA8Nw43CCl6T8FRAxs8gk7H1xQImj6/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 11",
+        "url": "https://drive.google.com/file/d/1uTtH_cMoaEzQEPrtcA-BFZRo27wBmsVl/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 13",
+        "url": "https://drive.google.com/file/d/1nVo1OAvRgpzT14wASxok9rYqmHEOHEAe/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 15",
+        "url": "https://drive.google.com/file/d/1oJ63x5YZfGY-O3YR-0uebVEJjgJHF_Uh/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 17",
+        "url": "https://drive.google.com/file/d/1YgJVozGN6dPoPQ78Sti7ZGbkppZJFE7A/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 19",
+        "url": "https://drive.google.com/file/d/1me8Y9NKOJO1B3NrEMncdDVndAQMWb8ix/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 21",
+        "url": "https://drive.google.com/file/d/13N2wb4sKJVMYiefA9NYYdcFKA1aD4pGE/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 23",
+        "url": "https://drive.google.com/file/d/1QPipoK_qaa4W-MAqty8hukmu4WaJvDkA/view?usp=drive_link",
+        "bg": "#000000"
+      }
+    ]
   }
 ]
