@@ -184,6 +184,10 @@
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-screen').style.display = 'block';
     ghToken = localStorage.getItem('evox_gh_token') || '';
+    if (!ghToken) {
+      var t = prompt('Ingresa tu GitHub Token:');
+      if (t) { ghToken = t.trim(); localStorage.setItem('evox_gh_token', ghToken); }
+    }
     loadFromGitHub();
   }
 
