@@ -204,6 +204,330 @@
       .grid { grid-template-columns: repeat(2, 1fr); }
       footer { padding: 24px 20px; flex-direction: column; gap: 8px; text-align: center; }
     }
+
+    /* ── CUSTOMIZER MODAL ── */
+    .customizer-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(5,5,15,0.97);
+      z-index: 2000;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .customizer-overlay.open { display: flex; }
+    .customizer-box {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-width: 920px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+    .customizer-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 1px;
+      text-transform: uppercase; padding: 8px 14px; border-radius: var(--radius);
+      z-index: 10; transition: all 0.2s;
+    }
+    .customizer-close:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+
+    .customizer-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      min-height: 520px;
+    }
+
+    .customizer-stage {
+      background: var(--surface2);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .stage-canvas {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 400 / 460;
+      cursor: grab;
+      user-select: none;
+    }
+    .stage-canvas:active { cursor: grabbing; }
+    .stage-canvas svg { width: 100%; height: 100%; display: block; }
+    .design-layer {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 120px; height: auto;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      max-height: 200px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+    }
+    .stage-hint {
+      margin-top: 18px;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .customizer-controls {
+      padding: 32px 28px;
+      display: flex; flex-direction: column;
+      gap: 22px;
+    }
+    .customizer-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px; letter-spacing: 1px;
+      color: var(--text);
+      padding-right: 80px;
+    }
+    .ctrl-group { display: flex; flex-direction: column; gap: 10px; }
+    .ctrl-label {
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .view-toggle { display: flex; gap: 8px; }
+    .view-btn {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 10px; cursor: pointer; border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    .view-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-bright); }
+    .view-btn:hover:not(.active) { border-color: var(--text-muted); }
+
+    .color-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+    .swatch-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2px solid var(--border); cursor: pointer;
+      transition: all 0.2s; position: relative;
+    }
+    .swatch-btn:hover { transform: scale(1.1); }
+    .swatch-btn.active { border-color: var(--accent-bright); box-shadow: 0 0 0 2px var(--accent-dim); }
+
+    .ctrl-slider {
+      width: 100%; height: 4px;
+      -webkit-appearance: none; appearance: none;
+      background: var(--border); border-radius: 4px; outline: none;
+    }
+    .ctrl-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-bright); cursor: pointer;
+      border: 2px solid var(--surface);
+    }
+    .ctrl-slider::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-bright); cursor: pointer; border: 2px solid var(--surface);
+    }
+
+    .ctrl-reset {
+      align-self: flex-start;
+      background: none; border: 1px solid var(--border);
+      color: var(--text-muted); font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 8px 16px; cursor: pointer; border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    .ctrl-reset:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+
+    .customizer-cta {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .customizer-note {
+      font-size: 10px; color: var(--text-muted); letter-spacing: 0.3px;
+      text-align: center; line-height: 1.5;
+    }
+
+    .customize-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-dim); border: 1px solid var(--accent);
+      color: var(--accent-bright); font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      padding: 9px 16px; border-radius: var(--radius); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .customize-btn:hover { background: var(--accent); color: #fff; }
+
+    @media (max-width: 720px) {
+      .customizer-grid { grid-template-columns: 1fr; }
+      .customizer-stage { border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
+      .customizer-controls { padding: 24px 20px; }
+      .customizer-title { padding-right: 0; margin-top: 8px; }
+    }
+
+
+    /* ── CUSTOMIZER MODAL ── */
+    .customizer-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(5,5,15,0.97);
+      z-index: 2000;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .customizer-overlay.open { display: flex; }
+    .customizer-box {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-width: 920px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+    .customizer-close {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: 11px; letter-spacing: 1px;
+      text-transform: uppercase; padding: 8px 14px; border-radius: var(--radius);
+      z-index: 10; transition: all 0.2s;
+    }
+    .customizer-close:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+
+    .customizer-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      min-height: 520px;
+    }
+
+    .customizer-stage {
+      background: var(--surface2);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 32px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .stage-canvas {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 400 / 460;
+      cursor: grab;
+      user-select: none;
+    }
+    .stage-canvas:active { cursor: grabbing; }
+    .stage-canvas svg { width: 100%; height: 100%; display: block; }
+    .design-layer {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 120px; height: auto;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      max-height: 200px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+    }
+    .stage-hint {
+      margin-top: 18px;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .customizer-controls {
+      padding: 32px 28px;
+      display: flex; flex-direction: column;
+      gap: 22px;
+    }
+    .customizer-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px; letter-spacing: 1px;
+      color: var(--text);
+      padding-right: 80px;
+    }
+    .ctrl-group { display: flex; flex-direction: column; gap: 10px; }
+    .ctrl-label {
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .view-toggle { display: flex; gap: 8px; }
+    .view-btn {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); font-family: 'Inter', sans-serif;
+      font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 10px; cursor: pointer; border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    .view-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-bright); }
+    .view-btn:hover:not(.active) { border-color: var(--text-muted); }
+
+    .color-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+    .swatch-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2px solid var(--border); cursor: pointer;
+      transition: all 0.2s; position: relative;
+    }
+    .swatch-btn:hover { transform: scale(1.1); }
+    .swatch-btn.active { border-color: var(--accent-bright); box-shadow: 0 0 0 2px var(--accent-dim); }
+
+    .ctrl-slider {
+      width: 100%; height: 4px;
+      -webkit-appearance: none; appearance: none;
+      background: var(--border); border-radius: 4px; outline: none;
+    }
+    .ctrl-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-bright); cursor: pointer;
+      border: 2px solid var(--surface);
+    }
+    .ctrl-slider::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-bright); cursor: pointer; border: 2px solid var(--surface);
+    }
+
+    .ctrl-reset {
+      align-self: flex-start;
+      background: none; border: 1px solid var(--border);
+      color: var(--text-muted); font-family: 'Inter', sans-serif;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 8px 16px; cursor: pointer; border-radius: var(--radius);
+      transition: all 0.2s;
+    }
+    .ctrl-reset:hover { color: var(--accent-bright); border-color: var(--accent-bright); }
+
+    .customizer-cta {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .customizer-note {
+      font-size: 10px; color: var(--text-muted); letter-spacing: 0.3px;
+      text-align: center; line-height: 1.5;
+    }
+
+    .customize-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--accent-dim); border: 1px solid var(--accent);
+      color: var(--accent-bright); font-family: 'Inter', sans-serif;
+      font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      padding: 9px 16px; border-radius: var(--radius); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .customize-btn:hover { background: var(--accent); color: #fff; }
+
+    @media (max-width: 720px) {
+      .customizer-grid { grid-template-columns: 1fr; }
+      .customizer-stage { border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
+      .customizer-controls { padding: 24px 20px; }
+      .customizer-title { padding-right: 0; margin-top: 8px; }
+    }
+
   </style>
 </head>
 <body>
@@ -229,8 +553,90 @@
       <button class="lightbox-close" id="lb-close">✕ cerrar</button>
       <img id="lightbox-img" src="" alt="" />
       <p class="lightbox-name" id="lightbox-name"></p>
+      <div style="text-align:center;margin-top:14px;">
+        <button class="customize-btn" id="lb-customize-btn">👕 Ver en camiseta</button>
+      </div>
     </div>
   </div>
+
+  <!-- CUSTOMIZER MODAL -->
+  <div class="customizer-overlay" id="customizer-overlay">
+    <div class="customizer-box">
+      <button class="customizer-close" id="customizer-close">✕ cerrar</button>
+
+      <div class="customizer-grid">
+        <!-- PREVIEW STAGE -->
+        <div class="customizer-stage">
+          <div class="stage-canvas" id="stage-canvas">
+            <svg id="shirt-svg" viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg">
+              <!-- FRONT VIEW -->
+              <g id="shirt-front">
+                <path id="shirt-front-fill" d="M130 40 L100 10 L60 40 L20 90 L50 130 L80 105 L80 420 L320 420 L320 105 L350 130 L380 90 L340 40 L300 10 L270 40 C270 60 230 75 200 75 C170 75 130 60 130 40 Z" fill="#ffffff" stroke="#1a1a2e" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M160 50 C170 65 185 72 200 72 C215 72 230 65 240 50" fill="none" stroke="#1a1a2e" stroke-width="2" opacity="0.35"/>
+              </g>
+              <!-- BACK VIEW -->
+              <g id="shirt-back" style="display:none;">
+                <path id="shirt-back-fill" d="M130 40 L100 10 L60 40 L20 90 L50 130 L80 105 L80 420 L320 420 L320 105 L350 130 L380 90 L340 40 L300 10 L270 40 C270 55 240 62 200 62 C160 62 130 55 130 40 Z" fill="#ffffff" stroke="#1a1a2e" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M150 45 C165 38 182 35 200 35 C218 35 235 38 250 45" fill="none" stroke="#1a1a2e" stroke-width="2" opacity="0.35"/>
+              </g>
+            </svg>
+
+            <!-- Draggable design image, position via JS -->
+            <img id="design-layer" class="design-layer" src="" alt="Diseño" draggable="false" />
+          </div>
+
+          <div class="stage-hint" id="stage-hint">Arrastra el diseño · usa el control de tamaño</div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="customizer-controls">
+          <h3 class="customizer-title" id="customizer-design-name">Personaliza tu diseño</h3>
+
+          <div class="ctrl-group">
+            <label class="ctrl-label">Vista</label>
+            <div class="view-toggle">
+              <button class="view-btn active" id="view-front-btn" data-view="front">Delante</button>
+              <button class="view-btn" id="view-back-btn" data-view="back">Detrás</button>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <label class="ctrl-label">Color de camiseta</label>
+            <div class="color-swatches" id="shirt-colors">
+              <button class="swatch-btn active" data-color="#ffffff" style="background:#ffffff" title="Blanco"></button>
+              <button class="swatch-btn" data-color="#0a0a0a" style="background:#0a0a0a" title="Negro"></button>
+              <button class="swatch-btn" data-color="#8a8a8a" style="background:#8a8a8a" title="Gris"></button>
+              <button class="swatch-btn" data-color="#1a2a4a" style="background:#1a2a4a" title="Azul marino"></button>
+              <button class="swatch-btn" data-color="#6b1f1f" style="background:#6b1f1f" title="Vino tinto"></button>
+              <button class="swatch-btn" data-color="#2d4a2d" style="background:#2d4a2d" title="Verde militar"></button>
+            </div>
+          </div>
+
+          <div class="ctrl-group">
+            <label class="ctrl-label">Tamaño del diseño</label>
+            <input type="range" id="size-slider" min="40" max="220" value="120" class="ctrl-slider" />
+          </div>
+
+          <div class="ctrl-group">
+            <label class="ctrl-label">Posición vertical</label>
+            <input type="range" id="ypos-slider" min="-60" max="100" value="0" class="ctrl-slider" />
+          </div>
+
+          <button class="ctrl-reset" id="reset-customizer">↺ Restablecer</button>
+
+          <div class="customizer-cta">
+            <a class="btn-primary" id="customizer-ig-btn" href="https://instagram.com/evox.wear" target="_blank" rel="noopener" style="width:100%;justify-content:center;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              Pedir este diseño
+            </a>
+            <p class="customizer-note">Esta es una previsualización referencial. El resultado final puede variar levemente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <footer>
     <span>© Evox.wear — Barranquilla</span>
     <a href="https://instagram.com/evox.wear" target="_blank">@evox.wear</a>
@@ -322,7 +728,7 @@
         card.style.backgroundColor = bg;
 
         (function(card, fid, d, bg) {
-          card.addEventListener('click', function() { openLightbox(thumbUrl(fid, 1200), d.name, bg); });
+          card.addEventListener('click', function() { openLightbox(thumbUrl(fid, 1200), d.name, bg, fid); });
           var img = new Image();
           img.onload = function() {
             var inner = document.createElement('div');
@@ -353,13 +759,18 @@
       });
     }
 
-    function openLightbox(src, name, bg) {
+    var currentLightboxFid = null;
+    var currentLightboxBg  = '#ffffff';
+
+    function openLightbox(src, name, bg, fid) {
       var lb   = document.getElementById('lightbox');
       var img  = document.getElementById('lightbox-img');
       var nmEl = document.getElementById('lightbox-name');
       img.src = src;
       img.style.backgroundColor = bg || 'transparent';
       nmEl.textContent = name;
+      currentLightboxFid = fid;
+      currentLightboxBg  = bg;
       lb.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -376,6 +787,12 @@
       if (e.target === this) closeLightbox();
     });
     document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    document.getElementById('lb-customize-btn').addEventListener('click', function() {
+      if (currentLightboxFid) {
+        var name = document.getElementById('lightbox-name').textContent;
+        openCustomizer(currentLightboxFid, name, currentLightboxBg);
+      }
+    });
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeLightbox(); });
 
     // ── THEME TOGGLE ──
@@ -400,6 +817,364 @@
       localStorage.setItem('evox_theme', next);
       applyTheme(next);
     });
+
+
+    // ── CUSTOMIZER ──────────────────────────────────────────
+    var custState = {
+      designUrl: '', designName: '', designBg: '#ffffff',
+      view: 'front', shirtColor: '#ffffff',
+      size: 120, yPos: 0,
+      dragging: false, dragStartX: 0, dragStartY: 0,
+      xOffset: 0, yOffset: 0, dragStartXOffset: 0, dragStartYOffset: 0
+    };
+
+    function openCustomizer(fileId, name, bg) {
+      custState.designUrl  = thumbUrl(fileId, 800);
+      custState.designName = name;
+      custState.designBg   = bg || '#ffffff';
+      custState.view = 'front';
+      custState.shirtColor = '#ffffff';
+      custState.size = 120;
+      custState.yPos = 0;
+      custState.xOffset = 0;
+      custState.yOffset = 0;
+
+      document.getElementById('customizer-design-name').textContent = name;
+      document.getElementById('design-layer').src = custState.designUrl;
+      document.getElementById('size-slider').value = 120;
+      document.getElementById('ypos-slider').value = 0;
+
+      // Reset view buttons
+      document.getElementById('view-front-btn').classList.add('active');
+      document.getElementById('view-back-btn').classList.remove('active');
+      document.getElementById('shirt-front').style.display = 'block';
+      document.getElementById('shirt-back').style.display = 'none';
+
+      // Reset color swatches
+      document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.swatch-btn[data-color="#ffffff"]').classList.add('active');
+      setShirtColor('#ffffff');
+
+      updateDesignLayer();
+
+      document.getElementById('customizer-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCustomizer() {
+      document.getElementById('customizer-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function setShirtColor(hex) {
+      custState.shirtColor = hex;
+      var frontFill = document.getElementById('shirt-front-fill');
+      var backFill  = document.getElementById('shirt-back-fill');
+      if (frontFill) frontFill.setAttribute('fill', hex);
+      if (backFill)  backFill.setAttribute('fill', hex);
+
+      // Adjust outline contrast for dark shirts
+      var isDark = isColorDark(hex);
+      var strokeColor = isDark ? '#444466' : '#1a1a2e';
+      if (frontFill) frontFill.setAttribute('stroke', strokeColor);
+      if (backFill)  backFill.setAttribute('stroke', strokeColor);
+    }
+
+    function isColorDark(hex) {
+      hex = hex.replace('#', '');
+      var r = parseInt(hex.substr(0,2), 16);
+      var g = parseInt(hex.substr(2,2), 16);
+      var b = parseInt(hex.substr(4,2), 16);
+      var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness < 128;
+    }
+
+    function updateDesignLayer() {
+      var layer = document.getElementById('design-layer');
+      layer.style.width = custState.size + 'px';
+      layer.style.backgroundColor = custState.designBg;
+      var baseY = custState.yPos;
+      layer.style.transform = 'translate(calc(-50% + ' + custState.xOffset + 'px), calc(-50% + ' + (baseY + custState.yOffset) + 'px))';
+    }
+
+    function setupCustomizerEvents() {
+      document.getElementById('customizer-close').addEventListener('click', closeCustomizer);
+      document.getElementById('customizer-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeCustomizer();
+      });
+
+      // View toggle
+      document.getElementById('view-front-btn').addEventListener('click', function() {
+        custState.view = 'front';
+        this.classList.add('active');
+        document.getElementById('view-back-btn').classList.remove('active');
+        document.getElementById('shirt-front').style.display = 'block';
+        document.getElementById('shirt-back').style.display = 'none';
+      });
+      document.getElementById('view-back-btn').addEventListener('click', function() {
+        custState.view = 'back';
+        this.classList.add('active');
+        document.getElementById('view-front-btn').classList.remove('active');
+        document.getElementById('shirt-back').style.display = 'block';
+        document.getElementById('shirt-front').style.display = 'none';
+      });
+
+      // Color swatches
+      document.querySelectorAll('.swatch-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+          setShirtColor(this.getAttribute('data-color'));
+        });
+      });
+
+      // Size slider
+      document.getElementById('size-slider').addEventListener('input', function() {
+        custState.size = parseInt(this.value);
+        updateDesignLayer();
+      });
+
+      // Y position slider
+      document.getElementById('ypos-slider').addEventListener('input', function() {
+        custState.yPos = parseInt(this.value);
+        updateDesignLayer();
+      });
+
+      // Reset
+      document.getElementById('reset-customizer').addEventListener('click', function() {
+        custState.size = 120;
+        custState.yPos = 0;
+        custState.xOffset = 0;
+        custState.yOffset = 0;
+        document.getElementById('size-slider').value = 120;
+        document.getElementById('ypos-slider').value = 0;
+        updateDesignLayer();
+      });
+
+      // Drag to reposition (mouse + touch)
+      var stage = document.getElementById('stage-canvas');
+      var layer = document.getElementById('design-layer');
+
+      function startDrag(clientX, clientY) {
+        custState.dragging = true;
+        custState.dragStartX = clientX;
+        custState.dragStartY = clientY;
+        custState.dragStartXOffset = custState.xOffset;
+        custState.dragStartYOffset = custState.yOffset;
+      }
+      function moveDrag(clientX, clientY) {
+        if (!custState.dragging) return;
+        var dx = clientX - custState.dragStartX;
+        var dy = clientY - custState.dragStartY;
+        custState.xOffset = custState.dragStartXOffset + dx;
+        custState.yOffset = custState.dragStartYOffset + dy;
+        updateDesignLayer();
+      }
+      function endDrag() { custState.dragging = false; }
+
+      stage.addEventListener('mousedown', function(e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
+      document.addEventListener('mouseup', endDrag);
+
+      stage.addEventListener('touchstart', function(e) {
+        var t = e.touches[0];
+        startDrag(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchmove', function(e) {
+        if (!custState.dragging) return;
+        var t = e.touches[0];
+        moveDrag(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchend', endDrag);
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('customizer-overlay').classList.contains('open')) {
+          closeCustomizer();
+        }
+      });
+    }
+
+    setupCustomizerEvents();
+
+
+
+    // ── CUSTOMIZER ──────────────────────────────────────────
+    var custState = {
+      designUrl: '', designName: '', designBg: '#ffffff',
+      view: 'front', shirtColor: '#ffffff',
+      size: 120, yPos: 0,
+      dragging: false, dragStartX: 0, dragStartY: 0,
+      xOffset: 0, yOffset: 0, dragStartXOffset: 0, dragStartYOffset: 0
+    };
+
+    function openCustomizer(fileId, name, bg) {
+      custState.designUrl  = thumbUrl(fileId, 800);
+      custState.designName = name;
+      custState.designBg   = bg || '#ffffff';
+      custState.view = 'front';
+      custState.shirtColor = '#ffffff';
+      custState.size = 120;
+      custState.yPos = 0;
+      custState.xOffset = 0;
+      custState.yOffset = 0;
+
+      document.getElementById('customizer-design-name').textContent = name;
+      document.getElementById('design-layer').src = custState.designUrl;
+      document.getElementById('size-slider').value = 120;
+      document.getElementById('ypos-slider').value = 0;
+
+      // Reset view buttons
+      document.getElementById('view-front-btn').classList.add('active');
+      document.getElementById('view-back-btn').classList.remove('active');
+      document.getElementById('shirt-front').style.display = 'block';
+      document.getElementById('shirt-back').style.display = 'none';
+
+      // Reset color swatches
+      document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelector('.swatch-btn[data-color="#ffffff"]').classList.add('active');
+      setShirtColor('#ffffff');
+
+      updateDesignLayer();
+
+      document.getElementById('customizer-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCustomizer() {
+      document.getElementById('customizer-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function setShirtColor(hex) {
+      custState.shirtColor = hex;
+      var frontFill = document.getElementById('shirt-front-fill');
+      var backFill  = document.getElementById('shirt-back-fill');
+      if (frontFill) frontFill.setAttribute('fill', hex);
+      if (backFill)  backFill.setAttribute('fill', hex);
+
+      // Adjust outline contrast for dark shirts
+      var isDark = isColorDark(hex);
+      var strokeColor = isDark ? '#444466' : '#1a1a2e';
+      if (frontFill) frontFill.setAttribute('stroke', strokeColor);
+      if (backFill)  backFill.setAttribute('stroke', strokeColor);
+    }
+
+    function isColorDark(hex) {
+      hex = hex.replace('#', '');
+      var r = parseInt(hex.substr(0,2), 16);
+      var g = parseInt(hex.substr(2,2), 16);
+      var b = parseInt(hex.substr(4,2), 16);
+      var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness < 128;
+    }
+
+    function updateDesignLayer() {
+      var layer = document.getElementById('design-layer');
+      layer.style.width = custState.size + 'px';
+      layer.style.backgroundColor = custState.designBg;
+      var baseY = custState.yPos;
+      layer.style.transform = 'translate(calc(-50% + ' + custState.xOffset + 'px), calc(-50% + ' + (baseY + custState.yOffset) + 'px))';
+    }
+
+    function setupCustomizerEvents() {
+      document.getElementById('customizer-close').addEventListener('click', closeCustomizer);
+      document.getElementById('customizer-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeCustomizer();
+      });
+
+      // View toggle
+      document.getElementById('view-front-btn').addEventListener('click', function() {
+        custState.view = 'front';
+        this.classList.add('active');
+        document.getElementById('view-back-btn').classList.remove('active');
+        document.getElementById('shirt-front').style.display = 'block';
+        document.getElementById('shirt-back').style.display = 'none';
+      });
+      document.getElementById('view-back-btn').addEventListener('click', function() {
+        custState.view = 'back';
+        this.classList.add('active');
+        document.getElementById('view-front-btn').classList.remove('active');
+        document.getElementById('shirt-back').style.display = 'block';
+        document.getElementById('shirt-front').style.display = 'none';
+      });
+
+      // Color swatches
+      document.querySelectorAll('.swatch-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+          setShirtColor(this.getAttribute('data-color'));
+        });
+      });
+
+      // Size slider
+      document.getElementById('size-slider').addEventListener('input', function() {
+        custState.size = parseInt(this.value);
+        updateDesignLayer();
+      });
+
+      // Y position slider
+      document.getElementById('ypos-slider').addEventListener('input', function() {
+        custState.yPos = parseInt(this.value);
+        updateDesignLayer();
+      });
+
+      // Reset
+      document.getElementById('reset-customizer').addEventListener('click', function() {
+        custState.size = 120;
+        custState.yPos = 0;
+        custState.xOffset = 0;
+        custState.yOffset = 0;
+        document.getElementById('size-slider').value = 120;
+        document.getElementById('ypos-slider').value = 0;
+        updateDesignLayer();
+      });
+
+      // Drag to reposition (mouse + touch)
+      var stage = document.getElementById('stage-canvas');
+      var layer = document.getElementById('design-layer');
+
+      function startDrag(clientX, clientY) {
+        custState.dragging = true;
+        custState.dragStartX = clientX;
+        custState.dragStartY = clientY;
+        custState.dragStartXOffset = custState.xOffset;
+        custState.dragStartYOffset = custState.yOffset;
+      }
+      function moveDrag(clientX, clientY) {
+        if (!custState.dragging) return;
+        var dx = clientX - custState.dragStartX;
+        var dy = clientY - custState.dragStartY;
+        custState.xOffset = custState.dragStartXOffset + dx;
+        custState.yOffset = custState.dragStartYOffset + dy;
+        updateDesignLayer();
+      }
+      function endDrag() { custState.dragging = false; }
+
+      stage.addEventListener('mousedown', function(e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
+      document.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
+      document.addEventListener('mouseup', endDrag);
+
+      stage.addEventListener('touchstart', function(e) {
+        var t = e.touches[0];
+        startDrag(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchmove', function(e) {
+        if (!custState.dragging) return;
+        var t = e.touches[0];
+        moveDrag(t.clientX, t.clientY);
+      }, { passive: true });
+      document.addEventListener('touchend', endDrag);
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('customizer-overlay').classList.contains('open')) {
+          closeCustomizer();
+        }
+      });
+    }
+
+    setupCustomizerEvents();
+
 
     loadCatalog();
   </script>
