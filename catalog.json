@@ -3036,6 +3036,16 @@
         "name": "Diseño 297",
         "url": "https://drive.google.com/file/d/1sQ0p47VxiXhDiOJzHyYLc-A5sAt3c0MV/view?usp=drive_link",
         "bg": "#000000"
+      },
+      {
+        "name": "Diseño 150",
+        "url": "https://drive.google.com/file/d/1gMMrmi9iRGfNBROLZEQ_gkxgvYD9e0fO/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 151",
+        "url": "https://drive.google.com/file/d/1RWLwnXVJCDRgzlQOCGnldUNrONHCrxxW/view?usp=drive_link",
+        "bg": "#000000"
       }
     ]
   },
@@ -4311,6 +4321,17 @@
   },
   {
     "name": "Games",
-    "designs": []
+    "designs": [
+      {
+        "name": "Diseño 1",
+        "url": "https://drive.google.com/file/d/1fvg_-kiHtyzLjBOOFnd9UcNTXCm6MxMx/view?usp=drive_link",
+        "bg": "#000000"
+      },
+      {
+        "name": "Diseño 2",
+        "url": "https://drive.google.com/file/d/1aUhWtTATY-2hCOUccVLDTTcMFFRc1aAJ/view?usp=drive_link",
+        "bg": "#000000"
+      }
+    ]
   }
 ]
