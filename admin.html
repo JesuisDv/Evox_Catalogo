@@ -294,7 +294,7 @@
     var bg       = document.getElementById('d-bg').value || '#ffffff';
     if (!rawLinks) { showToast('Pega al menos un link', 'error'); return; }
 
-    var lines = rawLinks.split('\n').map(function(l){ return l.trim(); }).filter(function(l){ return l.length > 0; });
+    var lines = rawLinks.split(/[\n,]+/).map(function(l){ return l.trim(); }).filter(function(l){ return l.length > 0; });
     var added = 0;
     lines.forEach(function(url) {
       if (!url) return;
@@ -509,14 +509,14 @@
       '<div style="display:grid;grid-template-columns:1fr 100px;gap:12px;align-items:start;">' +
         '<div class="field" style="margin:0">' +
           '<label>Links de Google Drive — uno por línea</label>' +
-          '<textarea id="d-urls" rows="4" placeholder="https://drive.google.com/file/d/ABC...&#10;https://drive.google.com/file/d/DEF...&#10;https://drive.google.com/file/d/GHI..." style="font-size:11px;line-height:1.6;"></textarea>' +
+          '<textarea id="d-urls" rows="4" placeholder="Pega los links uno por línea o separados por comas:&#10;https://drive.google.com/file/d/ABC..., https://drive.google.com/file/d/DEF..., https://drive.google.com/file/d/GHI..." style="font-size:11px;line-height:1.6;"></textarea>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:10px;">' +
           '<div class="color-picker-wrap"><label>Color fondo</label><div class="color-picker-inner"><input type="color" id="d-bg" value="#ffffff" /><span class="color-hex" id="d-bg-hex">#ffffff</span></div></div>' +
           '<button class="btn btn-sm" id="add-design-btn" style="width:100%;">+ Agregar</button>' +
         '</div>' +
       '</div>' +
-      '<p class="add-form-note" style="margin-top:8px;">Pega todos los links de una vez. Los nombres se asignan automáticamente — puedes editarlos haciendo clic en ✏️.</p>';
+      '<p class="add-form-note" style="margin-top:8px;">Acepta links uno por línea o separados por comas (como los copias de Drive). Los nombres se asignan automáticamente — puedes editarlos haciendo clic en ✏️.</p>';
     section.appendChild(addForm);
     panel.appendChild(section);
 
