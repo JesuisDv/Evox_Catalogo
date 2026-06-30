@@ -3945,7 +3945,7 @@
       {
         "name": "Diseño 37",
         "url": "https://drive.google.com/open?id=16Wd40FRlCVPYJJ2PXDty_j0srumFXgz2&usp=drive_copy",
-        "bg": "#000000"
+        "bg": "#ffffff"
       },
       {
         "name": "Diseño 39",
@@ -4260,7 +4260,7 @@
       {
         "name": "Diseño 83",
         "url": "https://drive.google.com/file/d/19uW3bgSclfVGgtKAv_H491SR28TQhVFQ/view?usp=drive_link",
-        "bg": "#000000"
+        "bg": "#ffffff"
       },
       {
         "name": "Diseño 85",
@@ -4308,5 +4308,9 @@
         "bg": "#000000"
       }
     ]
+  },
+  {
+    "name": "Games",
+    "designs": []
   }
 ]
