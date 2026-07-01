@@ -253,22 +253,25 @@
       position: relative;
       width: 100%;
       max-width: 360px;
-      aspect-ratio: 400 / 460;
+      aspect-ratio: 1 / 1;
       cursor: grab;
       user-select: none;
+      overflow: hidden;
+      border-radius: 4px;
     }
     .stage-canvas:active { cursor: grabbing; }
-    .stage-canvas svg { width: 100%; height: 100%; display: block; }
     .design-layer {
       position: absolute;
       top: 50%; left: 50%;
       width: 120px; height: auto;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      max-height: 200px;
+      max-height: 55%;
       object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+      z-index: 1;
     }
+    #shirt-color-layer { z-index: 0; }
+    #shirt-mockup { z-index: 2; }
     .stage-hint {
       margin-top: 18px;
       font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -415,22 +418,25 @@
       position: relative;
       width: 100%;
       max-width: 360px;
-      aspect-ratio: 400 / 460;
+      aspect-ratio: 1 / 1;
       cursor: grab;
       user-select: none;
+      overflow: hidden;
+      border-radius: 4px;
     }
     .stage-canvas:active { cursor: grabbing; }
-    .stage-canvas svg { width: 100%; height: 100%; display: block; }
     .design-layer {
       position: absolute;
       top: 50%; left: 50%;
       width: 120px; height: auto;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      max-height: 200px;
+      max-height: 55%;
       object-fit: contain;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+      z-index: 1;
     }
+    #shirt-color-layer { z-index: 0; }
+    #shirt-mockup { z-index: 2; }
     .stage-hint {
       margin-top: 18px;
       font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -568,21 +574,13 @@
         <!-- PREVIEW STAGE -->
         <div class="customizer-stage">
           <div class="stage-canvas" id="stage-canvas">
-            <svg id="shirt-svg" viewBox="0 0 400 460" xmlns="http://www.w3.org/2000/svg">
-              <!-- FRONT VIEW -->
-              <g id="shirt-front">
-                <path id="shirt-front-fill" d="M130 40 L100 10 L60 40 L20 90 L50 130 L80 105 L80 420 L320 420 L320 105 L350 130 L380 90 L340 40 L300 10 L270 40 C270 60 230 75 200 75 C170 75 130 60 130 40 Z" fill="#ffffff" stroke="#1a1a2e" stroke-width="3" stroke-linejoin="round"/>
-                <path d="M160 50 C170 65 185 72 200 72 C215 72 230 65 240 50" fill="none" stroke="#1a1a2e" stroke-width="2" opacity="0.35"/>
-              </g>
-              <!-- BACK VIEW -->
-              <g id="shirt-back" style="display:none;">
-                <path id="shirt-back-fill" d="M130 40 L100 10 L60 40 L20 90 L50 130 L80 105 L80 420 L320 420 L320 105 L350 130 L380 90 L340 40 L300 10 L270 40 C270 55 240 62 200 62 C160 62 130 55 130 40 Z" fill="#ffffff" stroke="#1a1a2e" stroke-width="3" stroke-linejoin="round"/>
-                <path d="M150 45 C165 38 182 35 200 35 C218 35 235 38 250 45" fill="none" stroke="#1a1a2e" stroke-width="2" opacity="0.35"/>
-              </g>
-            </svg>
-
-            <!-- Draggable design image, position via JS -->
+            <!-- Color wash layer -->
+            <div id="shirt-color-layer" style="position:absolute;inset:0;background:#ffffff;border-radius:4px;"></div>
+            <!-- Design layer -->
             <img id="design-layer" class="design-layer" src="" alt="Diseño" draggable="false" />
+            <!-- Shirt mockup overlay (multiply blending preserves folds) -->
+            <img id="shirt-mockup" src="https://raw.githubusercontent.com/JesuisDv/Evox_Catalogo/main/shirt_overlay.png" alt="" draggable="false"
+              style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none;" />
           </div>
 
           <div class="stage-hint" id="stage-hint">Arrastra el diseño · usa el control de tamaño</div>
@@ -595,8 +593,8 @@
           <div class="ctrl-group">
             <label class="ctrl-label">Vista</label>
             <div class="view-toggle">
-              <button class="view-btn active" id="view-front-btn" data-view="front">Delante</button>
-              <button class="view-btn" id="view-back-btn" data-view="back">Detrás</button>
+              <button class="view-btn active" id="view-front-btn">Delante</button>
+              <button class="view-btn" id="view-back-btn">Detrás</button>
             </div>
           </div>
 
@@ -868,16 +866,8 @@
 
     function setShirtColor(hex) {
       custState.shirtColor = hex;
-      var frontFill = document.getElementById('shirt-front-fill');
-      var backFill  = document.getElementById('shirt-back-fill');
-      if (frontFill) frontFill.setAttribute('fill', hex);
-      if (backFill)  backFill.setAttribute('fill', hex);
-
-      // Adjust outline contrast for dark shirts
-      var isDark = isColorDark(hex);
-      var strokeColor = isDark ? '#444466' : '#1a1a2e';
-      if (frontFill) frontFill.setAttribute('stroke', strokeColor);
-      if (backFill)  backFill.setAttribute('stroke', strokeColor);
+      var layer = document.getElementById('shirt-color-layer');
+      if (layer) layer.style.background = hex;
     }
 
     function isColorDark(hex) {
@@ -903,20 +893,15 @@
         if (e.target === this) closeCustomizer();
       });
 
-      // View toggle
+      // View toggle (single mockup for now)
       document.getElementById('view-front-btn').addEventListener('click', function() {
-        custState.view = 'front';
         this.classList.add('active');
         document.getElementById('view-back-btn').classList.remove('active');
-        document.getElementById('shirt-front').style.display = 'block';
-        document.getElementById('shirt-back').style.display = 'none';
       });
       document.getElementById('view-back-btn').addEventListener('click', function() {
-        custState.view = 'back';
         this.classList.add('active');
         document.getElementById('view-front-btn').classList.remove('active');
-        document.getElementById('shirt-back').style.display = 'block';
-        document.getElementById('shirt-front').style.display = 'none';
+        // Future: swap to back mockup
       });
 
       // Color swatches
@@ -948,6 +933,11 @@
         custState.yOffset = 0;
         document.getElementById('size-slider').value = 120;
         document.getElementById('ypos-slider').value = 0;
+        document.getElementById('view-front-btn').classList.add('active');
+        document.getElementById('view-back-btn').classList.remove('active');
+        setShirtColor('#ffffff');
+        document.querySelectorAll('.swatch-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelector('.swatch-btn[data-color="#ffffff"]').classList.add('active');
         updateDesignLayer();
       });
 
@@ -1047,16 +1037,8 @@
 
     function setShirtColor(hex) {
       custState.shirtColor = hex;
-      var frontFill = document.getElementById('shirt-front-fill');
-      var backFill  = document.getElementById('shirt-back-fill');
-      if (frontFill) frontFill.setAttribute('fill', hex);
-      if (backFill)  backFill.setAttribute('fill', hex);
-
-      // Adjust outline contrast for dark shirts
-      var isDark = isColorDark(hex);
-      var strokeColor = isDark ? '#444466' : '#1a1a2e';
-      if (frontFill) frontFill.setAttribute('stroke', strokeColor);
-      if (backFill)  backFill.setAttribute('stroke', strokeColor);
+      var layer = document.getElementById('shirt-color-layer');
+      if (layer) layer.style.background = hex;
     }
 
     function isColorDark(hex) {
@@ -1082,20 +1064,15 @@
         if (e.target === this) closeCustomizer();
       });
 
-      // View toggle
+      // View toggle (single mockup for now)
       document.getElementById('view-front-btn').addEventListener('click', function() {
-        custState.view = 'front';
         this.classList.add('active');
         document.getElementById('view-back-btn').classList.remove('active');
-        document.getElementById('shirt-front').style.display = 'block';
-        document.getElementById('shirt-back').style.display = 'none';
       });
       document.getElementById('view-back-btn').addEventListener('click', function() {
-        custState.view = 'back';
         this.classList.add('active');
         document.getElementById('view-front-btn').classList.remove('active');
-        document.getElementById('shirt-back').style.display = 'block';
-        document.getElementById('shirt-front').style.display = 'none';
+        // Future: swap to back mockup
       });
 
       // Color swatches
@@ -1127,6 +1104,11 @@
         custState.yOffset = 0;
         document.getElementById('size-slider').value = 120;
         document.getElementById('ypos-slider').value = 0;
+        document.getElementById('view-front-btn').classList.add('active');
+        document.getElementById('view-back-btn').classList.remove('active');
+        setShirtColor('#ffffff');
+        document.querySelectorAll('.swatch-btn').forEach(function(b){ b.classList.remove('active'); });
+        document.querySelector('.swatch-btn[data-color="#ffffff"]').classList.add('active');
         updateDesignLayer();
       });
 
