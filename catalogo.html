@@ -697,7 +697,7 @@
       return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w' + size;
     }
 
-    var PAGE_SIZE   = 30;
+    var PAGE_SIZE   = 12;
     var currentPage = 0;
 
     function switchTab(i) {
@@ -709,9 +709,7 @@
     function goToPage(p) {
       currentPage = p;
       render();
-      // Scroll to top of gallery
-      var main = document.getElementById('main-content');
-      if (main) main.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function render() {
@@ -957,6 +955,7 @@
 
     function updateDesignLayer() {
       var layer = document.getElementById('design-layer');
+      if (!layer) return;
       layer.style.width = custState.size + 'px';
       layer.style.backgroundColor = custState.designBg;
       var baseY = custState.yPos;
@@ -1064,173 +1063,7 @@
 
 
 
-    // ── CUSTOMIZER ──────────────────────────────────────────
-    var custState = {
-      designUrl: '', designName: '', designBg: '#ffffff',
-      view: 'front', shirtColor: '#ffffff',
-      size: 120, yPos: 0,
-      dragging: false, dragStartX: 0, dragStartY: 0,
-      xOffset: 0, yOffset: 0, dragStartXOffset: 0, dragStartYOffset: 0
-    };
-
-    function openCustomizer(fileId, name, bg) {
-      custState.designUrl  = thumbUrl(fileId, 800);
-      custState.designName = name;
-      custState.designBg   = bg || '#ffffff';
-      custState.view = 'front';
-      custState.shirtColor = '#ffffff';
-      custState.size = 120;
-      custState.yPos = 0;
-      custState.xOffset = 0;
-      custState.yOffset = 0;
-
-      document.getElementById('customizer-design-name').textContent = name;
-      document.getElementById('design-layer').src = custState.designUrl;
-      document.getElementById('size-slider').value = 120;
-      document.getElementById('ypos-slider').value = 0;
-
-      // Reset view buttons
-      document.getElementById('view-front-btn').classList.add('active');
-      document.getElementById('view-back-btn').classList.remove('active');
-
-      // Reset color swatches
-      document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
-      document.querySelector('.swatch-btn[data-color="#ffffff"]').classList.add('active');
-      setShirtColor('#ffffff');
-
-      updateDesignLayer();
-
-      document.getElementById('customizer-overlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeCustomizer() {
-      document.getElementById('customizer-overlay').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    function setShirtColor(hex) {
-      custState.shirtColor = hex;
-      var layer = document.getElementById('shirt-color-layer');
-      if (layer) layer.style.background = hex;
-    }
-
-    function isColorDark(hex) {
-      hex = hex.replace('#', '');
-      var r = parseInt(hex.substr(0,2), 16);
-      var g = parseInt(hex.substr(2,2), 16);
-      var b = parseInt(hex.substr(4,2), 16);
-      var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      return brightness < 128;
-    }
-
-    function updateDesignLayer() {
-      var layer = document.getElementById('design-layer');
-      layer.style.width = custState.size + 'px';
-      layer.style.backgroundColor = custState.designBg;
-      var baseY = custState.yPos;
-      layer.style.transform = 'translate(calc(-50% + ' + custState.xOffset + 'px), calc(-50% + ' + (baseY + custState.yOffset) + 'px))';
-    }
-
-    function setupCustomizerEvents() {
-      document.getElementById('customizer-close').addEventListener('click', closeCustomizer);
-      document.getElementById('customizer-overlay').addEventListener('click', function(e) {
-        if (e.target === this) closeCustomizer();
-      });
-
-      // View toggle (single mockup for now)
-      document.getElementById('view-front-btn').addEventListener('click', function() {
-        this.classList.add('active');
-        document.getElementById('view-back-btn').classList.remove('active');
-      });
-      document.getElementById('view-back-btn').addEventListener('click', function() {
-        this.classList.add('active');
-        document.getElementById('view-front-btn').classList.remove('active');
-        // Future: swap to back mockup
-      });
-
-      // Color swatches
-      document.querySelectorAll('.swatch-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
-          this.classList.add('active');
-          setShirtColor(this.getAttribute('data-color'));
-        });
-      });
-
-      // Size slider
-      document.getElementById('size-slider').addEventListener('input', function() {
-        custState.size = parseInt(this.value);
-        updateDesignLayer();
-      });
-
-      // Y position slider
-      document.getElementById('ypos-slider').addEventListener('input', function() {
-        custState.yPos = parseInt(this.value);
-        updateDesignLayer();
-      });
-
-      // Reset
-      document.getElementById('reset-customizer').addEventListener('click', function() {
-        custState.size = 120;
-        custState.yPos = 0;
-        custState.xOffset = 0;
-        custState.yOffset = 0;
-        document.getElementById('size-slider').value = 120;
-        document.getElementById('ypos-slider').value = 0;
-        document.getElementById('view-front-btn').classList.add('active');
-        document.getElementById('view-back-btn').classList.remove('active');
-        setShirtColor('#ffffff');
-        document.querySelectorAll('.swatch-btn').forEach(function(b){ b.classList.remove('active'); });
-        document.querySelector('.swatch-btn[data-color="#ffffff"]').classList.add('active');
-        updateDesignLayer();
-      });
-
-      // Drag to reposition (mouse + touch)
-      var stage = document.getElementById('stage-canvas');
-      var layer = document.getElementById('design-layer');
-
-      function startDrag(clientX, clientY) {
-        custState.dragging = true;
-        custState.dragStartX = clientX;
-        custState.dragStartY = clientY;
-        custState.dragStartXOffset = custState.xOffset;
-        custState.dragStartYOffset = custState.yOffset;
-      }
-      function moveDrag(clientX, clientY) {
-        if (!custState.dragging) return;
-        var dx = clientX - custState.dragStartX;
-        var dy = clientY - custState.dragStartY;
-        custState.xOffset = custState.dragStartXOffset + dx;
-        custState.yOffset = custState.dragStartYOffset + dy;
-        updateDesignLayer();
-      }
-      function endDrag() { custState.dragging = false; }
-
-      stage.addEventListener('mousedown', function(e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
-      document.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
-      document.addEventListener('mouseup', endDrag);
-
-      stage.addEventListener('touchstart', function(e) {
-        var t = e.touches[0];
-        startDrag(t.clientX, t.clientY);
-      }, { passive: true });
-      document.addEventListener('touchmove', function(e) {
-        if (!custState.dragging) return;
-        var t = e.touches[0];
-        moveDrag(t.clientX, t.clientY);
-      }, { passive: true });
-      document.addEventListener('touchend', endDrag);
-
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && document.getElementById('customizer-overlay').classList.contains('open')) {
-          closeCustomizer();
-        }
-      });
-    }
-
-    setupCustomizerEvents();
-
+    
 
     loadCatalog();
   </script>
