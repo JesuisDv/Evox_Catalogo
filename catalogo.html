@@ -97,6 +97,25 @@
     .lightbox-close:hover { color: var(--accent-bright); }
     .lightbox-name { margin-top: 12px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); text-align: center; }
     .loading-msg { padding: 60px 40px; text-align: center; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 40px 20px 20px; flex-wrap: wrap;
+    }
+    .page-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text-muted); font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 500; letter-spacing: 1px;
+      padding: 10px 16px; cursor: pointer; border-radius: var(--radius);
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .page-btn:hover:not(:disabled) { border-color: var(--accent-bright); color: var(--accent-bright); }
+    .page-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent-bright); }
+    .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .page-num { min-width: 40px; text-align: center; padding: 10px 12px; }
+    .page-ellipsis { color: var(--text-muted); font-size: 12px; padding: 0 4px; }
+    .page-info { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; }
     .no-categories { padding: 80px 40px; text-align: center; }
     .no-categories p { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
     footer { padding: 32px 40px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
@@ -678,6 +697,23 @@
       return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w' + size;
     }
 
+    var PAGE_SIZE   = 30;
+    var currentPage = 0;
+
+    function switchTab(i) {
+      activeIndex = i;
+      currentPage = 0;
+      render();
+    }
+
+    function goToPage(p) {
+      currentPage = p;
+      render();
+      // Scroll to top of gallery
+      var main = document.getElementById('main-content');
+      if (main) main.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function render() {
       var tabs = document.getElementById('tabs');
       var main = document.getElementById('main-content');
@@ -686,36 +722,82 @@
         main.innerHTML = '<div class="no-categories"><p>No hay categorías todavía.</p></div>';
         return;
       }
+
       // Render tabs
       var tabsHTML = '';
       for (var i = 0; i < catalog.length; i++) {
         tabsHTML += '<button class="tab-btn' + (i === activeIndex ? ' active' : '') + '" data-idx="' + i + '">' + catalog[i].name + '</button>';
       }
       tabs.innerHTML = tabsHTML;
-      // Tab click
       tabs.querySelectorAll('.tab-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
           activeIndex = parseInt(this.getAttribute('data-idx'));
+          currentPage = 0;
           render();
         });
       });
 
-      var cat = catalog[activeIndex];
+      var cat      = catalog[activeIndex];
       var allDesigns = cat.designs || [];
-      var designs = allDesigns.filter(function(d) { return extractFileId(d.url); });
+      var designs  = allDesigns.filter(function(d) { return extractFileId(d.url); });
+      var total    = designs.length;
+      var totalPages = Math.ceil(total / PAGE_SIZE);
+      var start    = currentPage * PAGE_SIZE;
+      var pageDesigns = designs.slice(start, start + PAGE_SIZE);
 
-      if (!designs.length) {
+      if (!total) {
         main.innerHTML = '<div class="gallery-section"><div class="category-header"><h2>' + cat.name + '</h2><span class="count-badge">0 diseños</span></div><div class="empty-state"><span class="icon">🎨</span><p>Esta categoría no tiene diseños aún.</p></div></div>';
         return;
       }
 
+      // Build skeletons for current page only
       var skeletons = '';
-      for (var j = 0; j < designs.length; j++) {
+      for (var j = 0; j < pageDesigns.length; j++) {
         skeletons += '<div class="card-skeleton" id="sk-' + j + '"></div>';
       }
-      main.innerHTML = '<div class="gallery-section"><div class="category-header"><h2>' + cat.name + '</h2><span class="count-badge">' + designs.length + ' diseño' + (designs.length !== 1 ? 's' : '') + '</span></div><div class="grid" id="grid">' + skeletons + '</div></div>';
 
-      designs.forEach(function(d, i) {
+      // Pagination info
+      var pageInfo = totalPages > 1
+        ? '<span class="page-info">Página ' + (currentPage + 1) + ' de ' + totalPages + ' · ' + total + ' diseños</span>'
+        : '<span class="count-badge">' + total + ' diseño' + (total !== 1 ? 's' : '') + '</span>';
+
+      // Pagination controls
+      var paginationHTML = '';
+      if (totalPages > 1) {
+        paginationHTML = '<div class="pagination">';
+        paginationHTML += '<button class="page-btn" id="prev-btn" ' + (currentPage === 0 ? 'disabled' : '') + '>← Anterior</button>';
+        // Page number buttons (show max 5 around current)
+        var startP = Math.max(0, currentPage - 2);
+        var endP   = Math.min(totalPages - 1, currentPage + 2);
+        if (startP > 0) paginationHTML += '<button class="page-btn page-num" data-page="0">1</button>' + (startP > 1 ? '<span class="page-ellipsis">…</span>' : '');
+        for (var p = startP; p <= endP; p++) {
+          paginationHTML += '<button class="page-btn page-num' + (p === currentPage ? ' active' : '') + '" data-page="' + p + '">' + (p + 1) + '</button>';
+        }
+        if (endP < totalPages - 1) paginationHTML += (endP < totalPages - 2 ? '<span class="page-ellipsis">…</span>' : '') + '<button class="page-btn page-num" data-page="' + (totalPages-1) + '">' + totalPages + '</button>';
+        paginationHTML += '<button class="page-btn" id="next-btn" ' + (currentPage >= totalPages - 1 ? 'disabled' : '') + '>Siguiente →</button>';
+        paginationHTML += '</div>';
+      }
+
+      main.innerHTML =
+        '<div class="gallery-section">' +
+          '<div class="category-header"><h2>' + cat.name + '</h2>' + pageInfo + '</div>' +
+          '<div class="grid" id="grid">' + skeletons + '</div>' +
+          paginationHTML +
+        '</div>';
+
+      // Wire pagination buttons
+      if (totalPages > 1) {
+        var prevBtn = document.getElementById('prev-btn');
+        var nextBtn = document.getElementById('next-btn');
+        if (prevBtn) prevBtn.addEventListener('click', function() { goToPage(currentPage - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', function() { goToPage(currentPage + 1); });
+        document.querySelectorAll('.page-num').forEach(function(btn) {
+          btn.addEventListener('click', function() { goToPage(parseInt(this.getAttribute('data-page'))); });
+        });
+      }
+
+      // Load images for current page only
+      pageDesigns.forEach(function(d, i) {
         var fid = extractFileId(d.url);
         var bg  = d.bg || '#10101a';
         var el  = document.getElementById('sk-' + i);
@@ -729,10 +811,6 @@
           card.addEventListener('click', function() { openLightbox(thumbUrl(fid, 1200), d.name, bg, fid); });
           var img = new Image();
           img.onload = function() {
-            var inner = document.createElement('div');
-            inner.style.width = '100%';
-            inner.style.height = '100%';
-            inner.style.position = 'relative';
             var imgEl = document.createElement('img');
             imgEl.src = thumbUrl(fid);
             imgEl.alt = d.name;
@@ -845,8 +923,6 @@
       // Reset view buttons
       document.getElementById('view-front-btn').classList.add('active');
       document.getElementById('view-back-btn').classList.remove('active');
-      document.getElementById('shirt-front').style.display = 'block';
-      document.getElementById('shirt-back').style.display = 'none';
 
       // Reset color swatches
       document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -1016,8 +1092,6 @@
       // Reset view buttons
       document.getElementById('view-front-btn').classList.add('active');
       document.getElementById('view-back-btn').classList.remove('active');
-      document.getElementById('shirt-front').style.display = 'block';
-      document.getElementById('shirt-back').style.display = 'none';
 
       // Reset color swatches
       document.querySelectorAll('.swatch-btn').forEach(function(b) { b.classList.remove('active'); });
